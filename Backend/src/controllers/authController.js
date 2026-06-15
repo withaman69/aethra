@@ -1,11 +1,15 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
+const generateToken = require("../utils/generateToken");
 
+// REGISTER USER
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    // Validation
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
@@ -20,6 +24,14 @@ const registerUser = async (req, res) => {
       });
     }
 
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    // Check Existing User
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -29,35 +41,42 @@ const registerUser = async (req, res) => {
       });
     }
 
+    // Hash Password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create User
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
+    // Response
     res.status(201).json({
       success: true,
       message: "User registered successfully",
-      user,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Register Error:", error);
 
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Internal Server Error",
     });
   }
 };
 
-const jwt = require("jsonwebtoken");
-
+// LOGIN USER
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Validation
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -65,7 +84,8 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    // Find User
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       return res.status(401).json({
@@ -74,6 +94,7 @@ const loginUser = async (req, res) => {
       });
     }
 
+    // Compare Password
     const isMatch = await bcrypt.compare(
       password,
       user.password
@@ -86,32 +107,32 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    // Generate JWT
+  const token = generateToken(user._id);
 
+    // Response
     res.status(200).json({
       success: true,
       message: "Login successful",
       token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login Error:", error);
 
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Internal Server Error",
     });
   }
 };
 
-
 module.exports = {
-  registerUser, loginUser
+  registerUser,
+  loginUser,
 };

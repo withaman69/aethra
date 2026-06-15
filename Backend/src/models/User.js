@@ -15,15 +15,41 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-   password: {
-  type: String,
-  required: true,
-  select: false,
-},
- role: {
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
+
+    role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
+    },
+
+    bio: {
+      type: String,
+      default: "",
+    },
+
+    occupation: {
+      type: String,
+      default: "",
+    },
+
+    skills: {
+      type: [String],
+      default: [],
+    },
+
+    goals: {
+      type: [String],
+      default: [],
+    },
+
+    avatar: {
+      type: String,
+      default: "",
     },
   },
   {

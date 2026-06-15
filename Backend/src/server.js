@@ -1,14 +1,19 @@
 const express = require("express");
-require("dotenv").config();
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+
+dotenv.config();
+
+connectDB();
 
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
-    res.send("Welcome to Aethra Backend");
+  res.send("Welcome to Aethra Backend");
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

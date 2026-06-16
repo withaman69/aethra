@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const userRoutes = require("./routes/userRoutes");
 const connectDB = require("./config/db");
 const adminRoutes = require("./routes/adminRoutes");
+const emailRoutes = require("./routes/emailRoutes");
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/email", emailRoutes);
 
 const PORT = process.env.PORT || 5000;
 

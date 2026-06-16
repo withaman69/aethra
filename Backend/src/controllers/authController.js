@@ -4,6 +4,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const generateToken = require("../utils/generateToken");
 const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 // REGISTER USER
 const registerUser = async (req, res) => {
   try {
@@ -49,6 +50,21 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+    });
+
+    // Send Welcome Email
+    await sendEmail({
+      email: user.email,
+      subject: "Welcome to Aethra",
+      mailgenContent: {
+        body: {
+          name: user.name,
+          intro:
+            "Welcome to Aethra! Your account has been created successfully.",
+          outro:
+            "We're excited to have you with us.",
+        },
+      },
     });
 
     // Response

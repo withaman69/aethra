@@ -6,6 +6,13 @@ const connectDB = require("./config/db");
 const adminRoutes = require("./routes/adminRoutes");
 const emailRoutes = require("./routes/emailRoutes");
 const errorHandler = require("./middlewares/errorMiddleware");
+const path = require("path");
+const uploadRoutes = require("./routes/uploadRoutes");
+
+
+
+
+
 
 dotenv.config();
 
@@ -15,10 +22,17 @@ const app = express();
 
 app.use(express.json());
 app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/email", emailRoutes);
 app.use(errorHandler);
+app.use(
+  "/uploads",
+  express.static(
+    path.join(__dirname, "../uploads")
+  )
+);
+app.use("/api/upload", uploadRoutes);
 
 const PORT = process.env.PORT || 5000;
 

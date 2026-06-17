@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
+    avatar: {
+      type: String,
+      default: "",
+    },
     name: {
       type: String,
       required: true,
@@ -52,16 +56,16 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
     resetPasswordToken: {
-  type: String,
-},
+      type: String,
+    },
 
-resetPasswordExpire: {
-  type: Date,
-},
+    resetPasswordExpire: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("User", userSchema);

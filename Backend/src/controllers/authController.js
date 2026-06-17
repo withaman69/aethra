@@ -14,28 +14,6 @@ const asyncHandler = require("../middlewares/asyncHandler");
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Validation
-  if (!name || !email || !password) {
-    throw new CustomError(
-      "All fields are required",
-      400
-    );
-  }
-
-  if (!validator.isEmail(email)) {
-    throw new CustomError(
-      "Invalid email",
-      400
-    );
-  }
-
-  if (password.length < 6) {
-    throw new CustomError(
-      "Password must be at least 6 characters",
-      400
-    );
-  }
-
   // Check Existing User
   const existingUser = await User.findOne({ email });
 
@@ -47,7 +25,10 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // Hash Password
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(
+    password,
+    10
+  );
 
   // Create User
   const user = await User.create({
@@ -197,8 +178,6 @@ const resetPassword = asyncHandler(async (req, res) => {
     message: "Password reset successful",
   });
 });
-
-
 module.exports = {
   registerUser,
   loginUser,

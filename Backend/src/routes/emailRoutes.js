@@ -5,6 +5,10 @@ const {
   sendTestEmail,
 } = require("../controllers/emailController");
 
+;
+
 router.get("/test", sendTestEmail);
+
+
 
 module.exports = router;

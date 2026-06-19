@@ -1,5 +1,10 @@
 const express = require("express");
 const protect = require("../middlewares/authMiddleware");
+const validate = require("../middlewares/validate");
+
+const {
+  updateProfileSchema,
+} = require("../validations/userValidation");
 
 const {
   getProfile,
@@ -10,6 +15,11 @@ const router = express.Router();
 
 router.get("/profile", protect, getProfile);
 
-router.put("/profile", protect, updateProfile);
+router.put(
+  "/profile",
+  protect,
+  validate(updateProfileSchema),
+  updateProfile
+);
 
 module.exports = router;

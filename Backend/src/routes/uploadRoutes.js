@@ -1,23 +1,22 @@
 const express = require("express");
+
 const router = express.Router();
 
-const {
-  uploadAvatar,
-} = require("../controllers/uploadController");
+const protect = require("../middlewares/authMiddleware");
 
 const upload = require(
-  "../middlewares/uploadMiddleware"
+"../middlewares/cloudinaryUpload"
 );
 
-const protect = require(
-  "../middlewares/authMiddleware"
-);
+const {
+uploadAvatar,
+} = require("../controllers/uploadController");
 
 router.post(
-  "/avatar",
-  protect,
-  upload.single("avatar"),
-  uploadAvatar
+"/avatar",
+protect,
+upload.single("avatar"),
+uploadAvatar
 );
 
 module.exports = router;

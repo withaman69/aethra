@@ -14,6 +14,13 @@ const errorHandler = require("./middlewares/errorMiddleware");
 
 dotenv.config();
 
+
+dotenv.config();
+
+
+
+
+
 connectDB();
 
 const app = express();

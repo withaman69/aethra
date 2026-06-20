@@ -1,25 +1,40 @@
 const express = require("express");
+
+const router = express.Router();
+
 const protect = require("../middlewares/authMiddleware");
 const validate = require("../middlewares/validate");
 
 const {
-  updateProfileSchema,
+updateProfileSchema,
+changePasswordSchema,
 } = require("../validations/userValidation");
 
 const {
-  getProfile,
-  updateProfile,
+getProfile,
+updateProfile,
+changePassword,
 } = require("../controllers/userController");
 
-const router = express.Router();
-
-router.get("/profile", protect, getProfile);
-
-router.put(
-  "/profile",
-  protect,
-  validate(updateProfileSchema),
-  updateProfile
+// GET USER PROFILE
+router.get(
+"/profile",
+protect,
+getProfile
 );
 
+// UPDATE USER PROFILE
+router.put(
+"/profile",
+protect,
+validate(updateProfileSchema),
+updateProfile
+);
+
+// CHANGE PASSWORD
+router.put(
+  "/change-password",
+  protect,
+  changePassword
+);
 module.exports = router;

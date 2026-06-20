@@ -14,8 +14,19 @@ Joi.string()
 goals: Joi.array().items(
 Joi.string()
 ),
+
+avatar: Joi.string().allow(""),
+});
+
+const changePasswordSchema = Joi.object({
+currentPassword: Joi.string().required(),
+
+newPassword: Joi.string()
+.min(6)
+.required(),
 });
 
 module.exports = {
 updateProfileSchema,
+changePasswordSchema,
 };

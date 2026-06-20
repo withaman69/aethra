@@ -137,10 +137,124 @@ res.status(200).json({
 }
 );
 
+const getPublicProfile = async (
+  req,
+  res
+) => {
+  try {
+    const user = await User.findById(
+      req.params.id
+    ).select(
+      "-password -resetPasswordToken -resetPasswordExpire"
+    );
 
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+const searchUsers = async (req, res) => {
+  try {
+    const keyword = req.query.keyword || "";
+
+    const users = await User.find({
+      name: {
+        $regex: keyword,
+        $options: "i",
+      },
+    }).select(
+      "-password -resetPasswordToken -resetPasswordExpire"
+    );
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const page =
+      Number(req.query.page) || 1;
+
+    const limit =
+      Number(req.query.limit) || 10;
+
+    const skip =
+      (page - 1) * limit;
+
+    const totalUsers =
+      await User.countDocuments();
+
+    const keyword =
+  req.query.keyword || "";
+
+const sort =
+  req.query.sort || "-createdAt";
+
+const users = await User.find({
+  name: {
+    $regex: keyword,
+    $options: "i",
+  },
+})
+  .select(
+    "-password -resetPasswordToken -resetPasswordExpire"
+  )
+  .sort(sort)
+  .skip(skip)
+  .limit(limit);
+
+    res.status(200).json({
+      success: true,
+      page,
+      totalPages: Math.ceil(
+        totalUsers / limit
+      ),
+      totalUsers,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
 
 module.exports = {
 getProfile,
 updateProfile,
 changePassword,
+getPublicProfile,
+searchUsers,
+getAllUsers,
 };

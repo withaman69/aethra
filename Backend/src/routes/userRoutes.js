@@ -14,6 +14,9 @@ const {
 getProfile,
 updateProfile,
 changePassword,
+getPublicProfile,
+searchUsers,
+getAllUsers,
 } = require("../controllers/userController");
 
 // GET USER PROFILE
@@ -37,4 +40,20 @@ router.put(
   protect,
   changePassword
 );
+router.get(
+  "/",
+  getAllUsers
+);
+
+router.get(
+  "/search",
+  searchUsers
+);
+
+router.get(
+  "/public/:id",
+  getPublicProfile
+);
+
+
 module.exports = router;

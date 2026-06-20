@@ -1,29 +1,39 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
-
 const connectDB = require("./config/db");
-
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const emailRoutes = require("./routes/emailRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
-
 const errorHandler = require("./middlewares/errorMiddleware");
+const helmet = require("helmet");
+const cors = require("cors");
+const rateLimit = require("express-rate-limit");
+
 
 dotenv.config();
-
-
-dotenv.config();
-
-
-
 
 
 connectDB();
 
 const app = express();
+app.use(helmet());
+
+app.use(cors());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    success: false,
+    message:
+      "Too many requests. Please try again later.",
+  },
+});
+
+app.use(limiter);
 
 // Body Parser
 app.use(express.json());

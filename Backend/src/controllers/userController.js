@@ -6,24 +6,28 @@ const CustomError = require("../utils/customError");
 // GET PROFILE
 const getProfile = async (req, res) => {
 try {
-const user = await User.findById(req.user.id);
+const user = await User.findById(
+  req.user.id
+).select(
+  "-password -resetPasswordToken -resetPasswordExpire"
+);
 
-```
+
 res.status(200).json({
   success: true,
   data: user,
 });
-```
+
 
 } catch (error) {
 console.error(error);
 
-```
+
 res.status(500).json({
   success: false,
   message: "Server Error",
 });
-```
+
 
 }
 };

@@ -13,6 +13,8 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const educationRoutes = require("./routes/educationRoutes");
 const experienceRoutes = require("./routes/experienceRoutes");
+const projectRoutes = require("./routes/projectRoutes");
+const certificationRoutes = require("./routes/certificationRoutes");
 
 dotenv.config();
 
@@ -52,10 +54,9 @@ app.use("/api/education", educationRoutes);
 app.get("/", (req, res) => {
   res.send("Welcome to Aethra Backend");
 });
-app.use(
-  "/api/experience",
-  experienceRoutes
-);
+app.use("/api/experience", experienceRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/certifications", certificationRoutes);
 
 // Global Error Handler (must be last)
 app.use(errorHandler);

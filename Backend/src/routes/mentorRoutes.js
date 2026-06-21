@@ -7,14 +7,29 @@ const protect =
 
 const {
   getCareerAnalysis,
-} = require(
-  "../controllers/mentorController"
-);
+} = require("../controllers/mentorController");
+
+const {
+  sendMentorRequest,
+  getMyRequests,
+} = require("../controllers/mentorRequestController");
 
 router.get(
   "/analyze",
   protect,
   getCareerAnalysis
+);
+
+router.post(
+  "/request",
+  protect,
+  sendMentorRequest
+);
+
+router.get(
+  "/requests",
+  protect,
+  getMyRequests
 );
 
 module.exports = router;

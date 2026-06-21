@@ -21,6 +21,11 @@ const roadmapRoutes = require("./routes/roadmapRoutes");
 const mentorRoutes = require("./routes/mentorRoutes");
 const skillGapRoutes = require("./routes/skillGapRoutes");
 const resumeAnalysisRoutes = require("./routes/resumeAnalysisRoutes");
+const aiMentorRoutes = require("./routes/aiMentorRoutes");
+const interviewRoutes = require("./routes/interviewRoutes");
+const aiRoadmapRoutes = require("./routes/aiRoadmapRoutes");
+const aiResumeReviewRoutes = require("./routes/aiResumeReviewRoutes");
+const aiCareerAnalysisRoutes = require("./routes/aiCareerAnalysisRoutes");
 
 dotenv.config();
 
@@ -69,6 +74,12 @@ app.use("/api/roadmaps", roadmapRoutes);
 app.use("/api/mentor", mentorRoutes);
 app.use("/api/skill-gap", skillGapRoutes);
 app.use("/api/resume-analysis", resumeAnalysisRoutes);
+app.use("/api/ai-mentor", aiMentorRoutes);
+app.use("/api/interviews", interviewRoutes);
+app.use("/api/ai-roadmap", aiRoadmapRoutes);
+app.use("/api/ai-resume", aiResumeReviewRoutes);
+app.use("/api/ai-career", aiCareerAnalysisRoutes);
+
 
 // Global Error Handler (must be last)
 app.use(errorHandler);

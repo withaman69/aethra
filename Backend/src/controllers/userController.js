@@ -44,7 +44,7 @@ avatar,
 name,
 } = req.body;
 
-```
+
 const user = await User.findById(req.user.id);
 
 if (!user) {
@@ -61,7 +61,10 @@ user.occupation =
 user.skills = skills || user.skills;
 user.goals = goals || user.goals;
 user.avatar = avatar || user.avatar;
-
+user.careerLevel =
+  req.body.careerLevel ||
+  user.careerLevel;
+  
 await user.save();
 
 res.status(200).json({
@@ -70,17 +73,17 @@ res.status(200).json({
     "Profile updated successfully",
   data: user,
 });
-```
+
 
 } catch (error) {
 console.error(error);
 
-```
+
 res.status(500).json({
   success: false,
   message: "Server Error",
 });
-```
+
 
 }
 };

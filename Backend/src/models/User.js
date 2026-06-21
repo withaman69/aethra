@@ -34,7 +34,15 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-
+    careerLevel: {
+  type: String,
+  enum: [
+    "student",
+    "fresher",
+    "experienced",
+  ],
+  default: "student",
+},
     bio: {
       type: String,
       default: "",

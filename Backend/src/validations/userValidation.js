@@ -14,6 +14,11 @@ Joi.string()
 goals: Joi.array().items(
 Joi.string()
 ),
+careerLevel: Joi.string().valid(
+  "student",
+  "fresher",
+  "experienced"
+),
 
 avatar: Joi.string().allow(""),
 });

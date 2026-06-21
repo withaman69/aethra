@@ -16,6 +16,7 @@ const experienceRoutes = require("./routes/experienceRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const certificationRoutes = require("./routes/certificationRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
+const goalRoutes = require("./routes/goalRoutes");
 
 dotenv.config();
 
@@ -59,6 +60,8 @@ app.use("/api/experience", experienceRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/certifications", certificationRoutes);
 app.use("/api/resume", resumeRoutes);
+app.use("/api/goals", goalRoutes);
+
 // Global Error Handler (must be last)
 app.use(errorHandler);
 

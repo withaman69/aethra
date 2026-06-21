@@ -19,7 +19,7 @@ const resumeRoutes = require("./routes/resumeRoutes");
 const goalRoutes = require("./routes/goalRoutes");
 const roadmapRoutes = require("./routes/roadmapRoutes");
 const mentorRoutes = require("./routes/mentorRoutes");
-
+const skillGapRoutes = require("./routes/skillGapRoutes");
 dotenv.config();
 
 connectDB();
@@ -65,6 +65,7 @@ app.use("/api/resume", resumeRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/roadmaps", roadmapRoutes);
 app.use("/api/mentor", mentorRoutes);
+app.use("/api/skill-gap", skillGapRoutes);
 
 // Global Error Handler (must be last)
 app.use(errorHandler);

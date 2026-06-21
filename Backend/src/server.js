@@ -11,10 +11,10 @@ const errorHandler = require("./middlewares/errorMiddleware");
 const helmet = require("helmet");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
-
+const educationRoutes = require("./routes/educationRoutes");
+const experienceRoutes = require("./routes/experienceRoutes");
 
 dotenv.config();
-
 
 connectDB();
 
@@ -28,8 +28,7 @@ const limiter = rateLimit({
   max: 100,
   message: {
     success: false,
-    message:
-      "Too many requests. Please try again later.",
+    message: "Too many requests. Please try again later.",
   },
 });
 
@@ -39,12 +38,7 @@ app.use(limiter);
 app.use(express.json());
 
 // Static Files
-app.use(
-"/uploads",
-express.static(
-path.join(__dirname, "../uploads")
-)
-);
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -52,11 +46,16 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/education", educationRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
-res.send("Welcome to Aethra Backend");
+  res.send("Welcome to Aethra Backend");
 });
+app.use(
+  "/api/experience",
+  experienceRoutes
+);
 
 // Global Error Handler (must be last)
 app.use(errorHandler);
@@ -64,7 +63,5 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-console.log(
-`Server running on port ${PORT}`
-);
+  console.log(`Server running on port ${PORT}`);
 });

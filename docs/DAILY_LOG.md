@@ -1,28 +1,65 @@
-# Day 13 - Avatar Upload System
+AETHRA FRONTEND BOOKMARK
+Current Status
 
-## Goals
+Date: 23 June 2026
 
-* Implement file uploads using Multer
-* Allow users to upload profile pictures
-* Store avatar filename in MongoDB
-* Serve uploaded images through Express
+Backend
 
-## Completed Tasks
+Completed
 
-* Installed and configured Multer
-* Created upload middleware
-* Added avatar field to User model
-* Created avatar upload controller
-* Created upload routes
-* Protected upload endpoint with JWT authentication
-* Stored avatar filename in MongoDB
-* Configured Express static file serving
-* Verified image access through browser
+Features Available:
 
-## Result
+Authentication
+Register
+Login
+Forgot Password
+Reset Password
+User Model
+avatar
+resume
+name
+email
+password
+role
+careerLevel
+bio
+occupation
+skills
+goals
+Frontend Completed (Day 1)
+Setup
+React + Vite
+Tailwind CSS
+Redux Toolkit
+React Router
+Axios
+Framer Motion
+Authentication
+Login Page
+Register Page
+Auth API
+Auth Slice
+Protected Route
+Token Storage
+User Storage
+Dashboard
+Dashboard Layout
+Sidebar
+Navbar
+Stats Cards
+Profile Completion Card
+Career Readiness Card
+Recent Activity
+Quick Actions
+Routes
+/
+-> Login
+/register
+-> Register
+/dashboard
+-> Protected Dashboard
+Git Milestone
 
-Users can now upload profile pictures, and the images are stored and accessible through public URLs.
+Commit Message:
 
-## Status
-
-Completed ✅
+Day 1 frontend auth and dashboard setup

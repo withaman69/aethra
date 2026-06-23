@@ -9,7 +9,8 @@ import Register from "../pages/Register/Register";
 import Dashboard from "../pages/Dashboard/Dashboard";
 
 import ProtectedRoute from "./ProtectedRoute";
-
+import Profile from "../pages/Profile/Profile";
+import Resume from "../pages/Resume/Resume";
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -37,6 +38,22 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/resume"
+  element={
+    <ProtectedRoute>
+      <Resume />
+    </ProtectedRoute>
+  }
+/>
+        <Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
 
       </Routes>
     </BrowserRouter>

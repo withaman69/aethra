@@ -52,14 +52,19 @@ const LoginForm = () => {
       );
 
       navigate("/dashboard");
-    } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          "Login failed"
-      );
-    } finally {
-      setLoading(false);
-    }
+  } catch (err) {
+  console.log("LOGIN ERROR:", err);
+  console.log("RESPONSE:", err?.response);
+  console.log("DATA:", err?.response?.data);
+
+  setError(
+    err?.response?.data?.message ||
+    err?.message ||
+    "Login failed"
+  );
+} finally {
+  setLoading(false);
+}
   };
 
   return (

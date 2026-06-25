@@ -22,9 +22,8 @@ const generateSuggestions =
     }
 
     if (
-      !profile.skills ||
-      profile.skills.length ===
-        0
+      profile.skillsCount ===
+      0
     ) {
       suggestions.push(
         "Add technical skills"
@@ -32,9 +31,8 @@ const generateSuggestions =
     }
 
     if (
-      !profile.goals ||
-      profile.goals.length ===
-        0
+      profile.goalsCount ===
+      0
     ) {
       suggestions.push(
         "Add career goals"

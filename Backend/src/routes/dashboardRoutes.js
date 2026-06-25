@@ -18,5 +18,10 @@ router.get(
   protect,
   getCareerSummary
 );
+router.get(
+  "/summary",
+  protect,
+  getCareerSummary
+);
 
 module.exports = router;

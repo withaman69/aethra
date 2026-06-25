@@ -68,6 +68,7 @@ const Resume = () => {
         </button>
 
       </div>
+      StatCard.jsx
     </DashboardLayout>
   );
 };

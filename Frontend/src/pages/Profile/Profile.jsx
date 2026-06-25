@@ -15,7 +15,7 @@ import {
   setLoading,
   setError,
 } from "../../features/profile/profileSlice";
-
+import ProfileHeader from "../../components/profile/ProfileHeader";
 const Profile = () => {
   const dispatch = useDispatch();
 
@@ -95,6 +95,9 @@ const Profile = () => {
         <h1 className="text-4xl font-bold mb-6">
           My Profile
         </h1>
+        <ProfileHeader profile={profile} />
+
+
 
         {/* Avatar Upload */}
         <div className="mb-8">

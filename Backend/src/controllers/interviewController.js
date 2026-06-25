@@ -7,9 +7,19 @@ const {
 
 const startInterview = async (req, res) => {
   try {
-    const { role } = req.body;
+    console.log("BODY:", req.body);
+const {
+  role,
+  level,
+} = req.body;
+console.log("ROLE:", role);
+console.log("LEVEL:", level);
 
-    const questions = generateQuestions(role);
+const questions =
+  generateQuestions(
+    role,
+    level
+  );
 
     const interview = await Interview.create({
       user: req.user.id,

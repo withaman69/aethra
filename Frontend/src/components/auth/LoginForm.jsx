@@ -32,12 +32,20 @@ const LoginForm = () => {
     try {
       setLoading(true);
 
-      const data = await loginUser(formData);
+    const data = await loginUser(formData);
+
+console.log("LOGIN RESPONSE:", data);
+console.log("TOKEN:", data.token);
 
       localStorage.setItem(
         "token",
         data.token
       );
+
+      console.log(
+  "STORED TOKEN:",
+  localStorage.getItem("token")
+);
 
       localStorage.setItem(
         "user",

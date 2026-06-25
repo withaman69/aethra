@@ -18,6 +18,7 @@ throw new CustomError(
 404
 );
 }
+console.log(req.file);
 
 user.avatar = req.file.path;
 

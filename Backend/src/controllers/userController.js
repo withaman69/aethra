@@ -5,31 +5,27 @@ const CustomError = require("../utils/customError");
 
 // GET PROFILE
 const getProfile = async (req, res) => {
-try {
-const user = await User.findById(
-  req.user.id
-).select(
-  "-password -resetPasswordToken -resetPasswordExpire"
-);
+  try {
+    console.log("REQ.USER:", req.user);
 
+    const user = await User.findById(req.user.id)
+      .select("-password -resetPasswordToken -resetPasswordExpire");
 
-res.status(200).json({
-  success: true,
-  data: user,
-});
+    console.log("FOUND USER:", user);
 
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
 
-} catch (error) {
-console.error(error);
+  } catch (error) {
+    console.error("GET PROFILE ERROR:", error);
 
-
-res.status(500).json({
-  success: false,
-  message: "Server Error",
-});
-
-
-}
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
 };
 
 // UPDATE PROFILE

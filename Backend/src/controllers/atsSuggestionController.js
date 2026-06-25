@@ -1,6 +1,6 @@
-const User = require(
-  "../models/User"
-);
+const User = require("../models/User");
+const Skill = require("../models/Skill");
+const Goal = require("../models/Goal");
 
 const {
   generateSuggestions,
@@ -24,10 +24,22 @@ const getSuggestions =
         });
       }
 
+      const skillsCount =
+        await Skill.countDocuments({
+          user: req.user.id,
+        });
+
+      const goalsCount =
+        await Goal.countDocuments({
+          user: req.user.id,
+        });
+
       const suggestions =
-        generateSuggestions(
-          user
-        );
+        generateSuggestions({
+          ...user.toObject(),
+          skillsCount,
+          goalsCount,
+        });
 
       res.status(200).json({
         success: true,

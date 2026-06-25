@@ -1,68 +1,93 @@
 const User =
-  require("../models/User");
+require("../models/User");
 
 const Roadmap =
-  require("../models/Roadmap");
+require("../models/Roadmap");
 
 const analyzeSkillGap =
-  async (
-    userId,
+async (
+userId,
+roadmapId
+) => {
+const user =
+await User.findById(
+userId
+);
+
+
+const roadmap =
+  await Roadmap.findById(
     roadmapId
-  ) => {
-    const user =
-      await User.findById(
-        userId
+  );
+
+if (!user || !roadmap) {
+  throw new Error(
+    "User or roadmap not found"
+  );
+}
+
+const userSkills =
+  user.skills || [];
+
+const roadmapSkills =
+  roadmap.steps || [];
+
+// Normalize skills for comparison
+const normalizedUserSkills =
+  userSkills.map(
+    (skill) =>
+      skill
+        .trim()
+        .toLowerCase()
+  );
+
+const missingSkills =
+  roadmapSkills.filter(
+    (skill) =>
+      !normalizedUserSkills.includes(
+        skill
+          .trim()
+          .toLowerCase()
+      )
+  );
+
+const matchedSkills =
+  roadmapSkills.filter(
+    (skill) =>
+      normalizedUserSkills.includes(
+        skill
+          .trim()
+          .toLowerCase()
+      )
+  );
+
+const completion =
+  roadmapSkills.length === 0
+    ? 0
+    : Math.round(
+        (matchedSkills.length /
+          roadmapSkills.length) *
+          100
       );
 
-    const roadmap =
-      await Roadmap.findById(
-        roadmapId
-      );
+return {
+  roadmap:
+    roadmap.title,
 
-    if (!user || !roadmap) {
-      throw new Error(
-        "User or roadmap not found"
-      );
-    }
+  userSkills,
 
-    const userSkills =
-      user.skills || [];
+  roadmapSkills,
 
-    const roadmapSkills =
-      roadmap.steps || [];
+  matchedSkills,
 
-    const missingSkills =
-      roadmapSkills.filter(
-        (skill) =>
-          !userSkills.includes(
-            skill
-          )
-      );
+  missingSkills,
 
-    const completion =
-      roadmapSkills.length === 0
-        ? 0
-        : Math.round(
-            ((roadmapSkills.length -
-              missingSkills.length) /
-              roadmapSkills.length) *
-              100
-          );
+  completion,
+};
 
-    return {
-      roadmap:
-        roadmap.title,
 
-      userSkills,
-
-      roadmapSkills,
-
-      missingSkills,
-
-      completion,
-    };
-  };
+};
 
 module.exports = {
-  analyzeSkillGap,
+analyzeSkillGap,
 };

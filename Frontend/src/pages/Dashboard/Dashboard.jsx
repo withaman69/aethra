@@ -1,73 +1,137 @@
 import DashboardLayout from "../../components/layout/DashboardLayout";
-
-import StatsCard from "../../components/dashboard/StatsCard";
-import ProfileCompletionCard from "../../components/dashboard/ProfileCompletionCard";
-import CareerReadinessCard from "../../components/dashboard/CareerReadinessCard";
-import RecentActivity from "../../components/dashboard/RecentActivity";
-import QuickAction from "../../components/dashboard/QuickActions";
+import StatCard from "../../components/dashboard/StatCard";
+import { useEffect, useState } from "react";
 
 import {
-  User,
-  FileText,
-  Target,
-  Trophy,
-} from "lucide-react";
-
+  getDashboardStats,
+  getDashboardSummary,
+} from "../../features/dashboard/dashboardApi";
+import AIInsights from "../../components/dashboard/AIInsights";
 const Dashboard = () => {
+  const [stats, setStats] = useState({
+    skills: 0,
+    projects: 0,
+    goals: 0,
+    certifications: 0,
+  });
+
+  const [summary, setSummary] =
+    useState(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data =
+          await getDashboardStats();
+
+        setStats(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const data =
+          await getDashboardSummary();
+
+        setSummary(data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSummary();
+  }, []);
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="p-6">
 
-        <h1 className="text-4xl font-bold text-white">
-          Welcome To Aethra 🚀
+        <h1 className="text-4xl font-bold mb-8">
+          Dashboard
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        {/* Main Stats */}
+        <div className="grid grid-cols-4 gap-6">
 
-          <StatsCard
-            title="Profile Completion"
-            value="70%"
-            icon={<User />}
+          <StatCard
+            title="Skills"
+            value={stats.skills}
           />
 
-          <StatsCard
-            title="ATS Score"
-            value="82"
-            icon={<FileText />}
+          <StatCard
+            title="Projects"
+            value={stats.projects}
           />
 
-          <StatsCard
-            title="Career Readiness"
-            value="78%"
-            icon={<Target />}
+          <StatCard
+            title="Goals"
+            value={stats.goals}
           />
 
-          <StatsCard
-            title="Achievements"
-            value="12"
-            icon={<Trophy />}
+          <StatCard
+            title="Certificates"
+            value={stats.certifications}
           />
 
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* AI Career Summary */}
+        <div className="grid grid-cols-4 gap-6 mt-8">
 
-          <ProfileCompletionCard />
+          <div className="bg-white rounded-xl shadow p-6">
+            <p className="text-gray-500">
+              ATS Score
+            </p>
 
-          <CareerReadinessCard />
+            <h2 className="text-4xl font-bold mt-2">
+              {summary?.atsScore || 0}
+            </h2>
+          </div>
 
-          <RecentActivity />
+          <div className="bg-white rounded-xl shadow p-6">
+            <p className="text-gray-500">
+              Career Readiness
+            </p>
 
-          <QuickAction />
+            <h2 className="text-4xl font-bold mt-2">
+              {summary?.readinessScore || 0}%
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-xl shadow p-6">
+            <p className="text-gray-500">
+              Profile Completion
+            </p>
+
+            <h2 className="text-4xl font-bold mt-2">
+              {summary?.profileCompletion || 0}%
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-xl shadow p-6">
+            <p className="text-gray-500">
+              Suggestions
+            </p>
+
+            <h2 className="text-4xl font-bold mt-2">
+              {summary?.suggestionCount || 0}
+            </h2>
+          </div>
 
         </div>
 
+      {/* AI Insights */}
+        <AIInsights />
       </div>
+        
     </DashboardLayout>
   );
 };
-<div className="bg-red-500 text-white p-10 rounded-xl">
-  Tailwind Working
-</div>
 
 export default Dashboard;

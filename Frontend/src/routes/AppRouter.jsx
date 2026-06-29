@@ -24,7 +24,7 @@ import CareerReadiness from "../pages/CareerReadiness/CareerReadiness";
 import JobReadinessReport from "../pages/JobReadinessReport/JobReadinessReport";
 import InterviewHistory from "../pages/InterviewHistory/InterviewHistory";
 import Home from "../pages/Home/Home";
-import ATSAnalyzer from "../pages/reports/ATSAnalyzer";
+import ATSAnalyzer from "../pages/Reports/ATSAnalyzer";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
 const AppRouter = () => {

@@ -36,7 +36,13 @@ const mockInterviewRoutes = require("./routes/mockInterviewRoutes");
 const interviewEvaluationRoutes = require("./routes/interviewEvaluationRoutes");
 const jobReadinessReportRoutes = require("./routes/jobReadinessReportRoutes");
 const pdfReportRoutes = require("./routes/pdfReportRoutes");
-
+const profileRoutes = require("./routes/profileRoutes");
+const roadmapProgressRoutes =
+require("./routes/roadmapProgressRoutes");
+const goalProgressRoutes =
+  require(
+    "./routes/goalProgressRoutes"
+  );
 const skillRoutes =
   require("./routes/skillRoutes");
 dotenv.config();
@@ -101,9 +107,28 @@ app.use("/api/mock-interview", mockInterviewRoutes);
 app.use("/api/interview-evaluation", interviewEvaluationRoutes);
 app.use("/api/job-readiness-report", jobReadinessReportRoutes);
 app.use("/api/pdf-report", pdfReportRoutes);
+app.use("/api/profile", profileRoutes);
+app.use(
+  "/api/ats",
+  require(
+    "./routes/atsRoutes"
+  )
+);
+app.use(
+"/api/roadmap-progress",
+roadmapProgressRoutes
+);
 app.use(
   "/api/skills",
   skillRoutes
+);
+app.use(
+  "/api/goal-progress",
+  goalProgressRoutes
+);
+app.use(
+  "/api/goal-analytics",
+  require("./routes/goalAnalyticsRoutes")
 );
 
 // Global Error Handler (must be last)

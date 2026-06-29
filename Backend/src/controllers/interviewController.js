@@ -32,13 +32,16 @@ const questions =
       data: interview,
     });
   } catch (error) {
-    console.error(error);
+  console.error(
+    "INTERVIEW ERROR:",
+    error
+  );
 
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-    });
-  }
+  res.status(500).json({
+    success: false,
+    message: error.message,
+  });
+}
 };
 
 const submitInterview = async (req, res) => {

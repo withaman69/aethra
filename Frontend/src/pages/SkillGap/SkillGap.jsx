@@ -1,113 +1,199 @@
+import { useEffect, useState } from "react";
+
 import {
-  useState,
-} from "react";
+useParams,
+} from "react-router-dom";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 
 import {
-  getSkillGap,
+getSkillGap,
 } from "../../features/skillGap/skillGapApi";
 
+import {
+CircularProgressbar,
+} from "react-circular-progressbar";
+
+import "react-circular-progressbar/dist/styles.css";
+
 const SkillGap = () => {
-  const [
-    roadmapId,
-    setRoadmapId,
-  ] = useState("");
 
-  const [result, setResult] =
-    useState(null);
+const { roadmapId } =
+useParams();
 
-  const [loading, setLoading] =
-    useState(false);
+const [result, setResult] =
+useState(null);
 
-  const handleAnalyze =
-    async () => {
-      try {
-        setLoading(true);
+const [loading, setLoading] =
+useState(true);
 
-        const data =
-          await getSkillGap(
-            roadmapId
-          );
+useEffect(() => {
 
-        setResult(
-          data.data
-        );
-      } catch (error) {
-        console.error(error);
+const fetchGap =
+async () => {
 
-        alert(
-          "Failed to analyze skill gap"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+try {
 
-  return (
-    <DashboardLayout>
-      <div className="max-w-5xl mx-auto p-6">
+const data =
+await getSkillGap(
+roadmapId
+);
 
-        <h1 className="text-4xl font-bold mb-8">
-          Skill Gap Analysis
-        </h1>
+setResult(
+data.data
+);
 
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+} catch (error) {
 
-          <label className="block mb-2 font-medium">
-            Roadmap ID
-          </label>
+console.error(error);
 
-          <input
-            type="text"
-            value={roadmapId}
-            onChange={(e) =>
-              setRoadmapId(
-                e.target.value
-              )
-            }
-            placeholder="Enter Roadmap ID"
-            className="w-full border rounded-lg p-3 mb-4"
-          />
+} finally {
 
-          <button
-            onClick={
-              handleAnalyze
-            }
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg"
-          >
-            Analyze Skill Gap
-          </button>
+setLoading(false);
 
-        </div>
+}
 
-        {loading && (
-          <div className="bg-white p-6 rounded-xl shadow">
-            Loading...
-          </div>
-        )}
+};
 
-        {result && (
-          <div className="bg-white p-6 rounded-xl shadow">
+fetchGap();
 
-            <h2 className="text-2xl font-bold mb-4">
-              Analysis Result
-            </h2>
+}, [roadmapId]);
 
-            <pre className="whitespace-pre-wrap">
-              {JSON.stringify(
-                result,
-                null,
-                2
-              )}
-            </pre>
+if (loading) {
 
-          </div>
-        )}
+return (
+<DashboardLayout>
+<div className="p-10">
+Loading Skill Gap...
+</div>
+</DashboardLayout>
+);
 
-      </div>
-    </DashboardLayout>
-  );
+}
+
+return (
+<DashboardLayout>
+
+<div className="p-8 max-w-7xl mx-auto">
+
+<h1 className="text-4xl font-bold mb-8">
+Skill Gap Analysis
+</h1>
+
+<div className="grid lg:grid-cols-3 gap-8">
+
+<div className="bg-white rounded-2xl shadow-lg p-8">
+
+<h2 className="text-xl font-bold mb-6">
+Match Score
+</h2>
+
+<div className="w-48 mx-auto">
+
+<CircularProgressbar
+value={
+result.completion
+}
+text={`${result.completion}%`}
+/>
+
+</div>
+
+</div>
+
+<div className="bg-white rounded-2xl shadow-lg p-8">
+
+<h2 className="text-xl font-bold mb-4 text-green-600">
+
+Matched Skills
+
+</h2>
+
+<div className="space-y-3">
+
+{result.matchedSkills.map(
+(skill) => (
+
+<div
+key={skill}
+className="bg-green-100 text-green-700 px-4 py-2 rounded-lg"
+>
+
+✓ {skill}
+
+</div>
+
+)
+)}
+
+</div>
+
+</div>
+
+<div className="bg-white rounded-2xl shadow-lg p-8">
+
+<h2 className="text-xl font-bold mb-4 text-red-600">
+
+Missing Skills
+
+</h2>
+
+<div className="space-y-3">
+
+{result.missingSkills.map(
+(skill) => (
+
+<div
+key={skill}
+className="bg-red-100 text-red-700 px-4 py-2 rounded-lg"
+>
+
+✗ {skill}
+
+</div>
+
+)
+)}
+
+</div>
+
+</div>
+
+</div>
+
+<div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
+
+<h2 className="text-2xl font-bold mb-4">
+Recommendations
+</h2>
+
+<p className="text-lg">
+
+Focus on learning:
+
+</p>
+
+<ul className="list-disc pl-6 mt-4">
+
+{result.missingSkills.map(
+(skill) => (
+
+<li key={skill}>
+{skill}
+</li>
+
+)
+)}
+
+</ul>
+
+</div>
+
+</div>
+
+</DashboardLayout>
+);
+
 };
 
 export default SkillGap;

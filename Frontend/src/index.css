@@ -1,1 +1,60 @@
-@import "tailwindcss";
+@import "tailwindcss";body {
+  background: #0a0a0f;
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #22d3ee;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111827;
+}
+body {
+  background: #020617;
+  color: white;
+}
+
+input,
+textarea,
+select {
+  color: white;
+}
+body {
+  background: #020617;
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #22d3ee;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.card-glass {
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+.glow-cyan {
+  box-shadow:
+  0 0 20px rgba(34,211,238,.4);
+}
+
+.glow-purple {
+  box-shadow:
+  0 0 20px rgba(168,85,247,.4);
+}

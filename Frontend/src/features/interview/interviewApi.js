@@ -14,22 +14,18 @@ export const startInterview =
     return response.data;
   };
 
+
 export const submitInterview =
-  async (
-    interviewId,
-    answers
-  ) => {
+  async (data) => {
     const response =
       await api.post(
-        "/interviews/submit",
-        {
-          interviewId,
-          answers,
-        }
+        "/interview/submit",
+        data
       );
 
     return response.data;
   };
+
 
 export const getInterviewHistory =
   async () => {

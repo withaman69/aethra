@@ -7,9 +7,12 @@ const protect = require("../middlewares/authMiddleware");
 const upload = require(
 "../middlewares/cloudinaryUpload"
 );
-
+const resumeUpload =
+  require(
+    "../middlewares/cloudinaryResumeUpload"
+  );
 const {
-uploadAvatar,
+uploadAvatar,uploadResume
 } = require("../controllers/uploadController");
 
 router.post(
@@ -18,5 +21,12 @@ protect,
 upload.single("avatar"),
 uploadAvatar
 );
-
+router.post(
+  "/resume",
+  protect,
+  resumeUpload.single(
+    "resume"
+  ),
+  uploadResume
+);
 module.exports = router;

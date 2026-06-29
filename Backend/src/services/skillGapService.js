@@ -30,7 +30,7 @@ const userSkills =
   user.skills || [];
 
 const roadmapSkills =
-  roadmap.steps || [];
+  roadmap.skills || [];
 
 // Normalize skills for comparison
 const normalizedUserSkills =

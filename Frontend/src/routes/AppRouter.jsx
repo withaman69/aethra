@@ -17,13 +17,24 @@ import AIMentor from "../pages/AIMentor/AIMentor";
 import Interview from "../pages/Interview/Interview";
 import Roadmaps from "../pages/Roadmaps/Roadmaps";
 import SkillGap from "../pages/SkillGap/SkillGap";
+import Reports from "../pages/Reports/Reports";
+import ResumeScore from "../pages/ResumeScore/ResumeScore";
+import AdvancedResumeScore from "../pages/AdvancedResumeScore/AdvancedResumeScore";
+import CareerReadiness from "../pages/CareerReadiness/CareerReadiness";
+import JobReadinessReport from "../pages/JobReadinessReport/JobReadinessReport";
+import InterviewHistory from "../pages/InterviewHistory/InterviewHistory";
+import Home from "../pages/Home/Home";
+import ATSAnalyzer from "../pages/reports/ATSAnalyzer";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* Public Routes */}
 
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
 
@@ -58,10 +69,35 @@ const AppRouter = () => {
         <Route path="/projects" element={<Projects />} />
         <Route path="/goals" element={<Goals />} />
         <Route path="/certifications" element={<Certifications />} />
+        <Route path="/skill-gap/:roadmapId" element={<SkillGap />} />
+        <Route path="/career-readiness" element={<CareerReadiness />} />
         <Route
-  path="/skill-gap"
-  element={<SkillGap />}
+  path="/forgot-password"
+  element={<ForgotPassword />}
 />
+
+<Route
+  path="/reset-password/:token"
+  element={<ResetPassword />}
+/>
+        <Route
+  path="/ats-analyzer"
+  element={<ATSAnalyzer />}
+/>
+        <Route
+          path="/interview-history"
+          element={
+            <ProtectedRoute>
+              <InterviewHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/job-readiness-report" element={<JobReadinessReport />} />
+        <Route
+          path="/advanced-resume-score"
+          element={<AdvancedResumeScore />}
+        />
+        <Route path="/resume-score" element={<ResumeScore />} />
         <Route
           path="/interview"
           element={
@@ -95,6 +131,7 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/reports" element={<Reports />} />
       </Routes>
     </BrowserRouter>
   );

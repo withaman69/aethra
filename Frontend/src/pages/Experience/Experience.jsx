@@ -92,130 +92,247 @@ const Experience = () => {
       }
     };
 
-  return (
-    <DashboardLayout>
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">
-        Experience
-      </h1>
+return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 mb-8"
+  <div className="mb-10">
+
+    <h1 className="text-5xl font-black bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+      Experience
+    </h1>
+
+    <p className="text-slate-400 mt-3">
+      Showcase your professional journey.
+    </p>
+
+  </div>
+
+  <div className="grid lg:grid-cols-3 gap-8">
+
+    <div className="lg:col-span-1">
+
+      <div
+        className="
+        bg-white/5
+        backdrop-blur-xl
+        border
+        border-white/10
+        rounded-3xl
+        p-6
+      "
       >
-        <input
-          type="text"
-          name="company"
-          placeholder="Company"
-          value={formData.company}
-          onChange={handleChange}
-        />
 
-        <input
-          type="text"
-          name="position"
-          placeholder="Position"
-          value={formData.position}
-          onChange={handleChange}
-        />
-
-        <input
-          type="text"
-          name="employmentType"
-          placeholder="Employment Type"
-          value={
-            formData.employmentType
-          }
-          onChange={handleChange}
-        />
-
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          value={formData.location}
-          onChange={handleChange}
-        />
-
-        <input
-          type="date"
-          name="startDate"
-          value={formData.startDate}
-          onChange={handleChange}
-        />
-
-        <input
-          type="date"
-          name="endDate"
-          value={formData.endDate}
-          onChange={handleChange}
-        />
-
-        <label>
-          <input
-            type="checkbox"
-            name="current"
-            checked={formData.current}
-            onChange={handleChange}
-          />
-          Currently Working Here
-        </label>
-
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={
-            formData.description
-          }
-          onChange={handleChange}
-        />
-
-        <button type="submit">
+        <h2 className="text-2xl font-bold text-cyan-300 mb-6">
           Add Experience
-        </button>
-      </form>
+        </h2>
 
-      <div>
-        {experiences.map(
-          (experience) => (
-            <div
-              key={experience._id}
-              className="border p-4 mb-4"
-            >
-              <h3>
-                {
-                  experience.position
-                }
-              </h3>
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+        >
 
-              <p>
-                {
-                  experience.company
-                }
-              </p>
+          <input
+            type="text"
+            name="company"
+            placeholder="Company"
+            value={formData.company}
+            onChange={handleChange}
+            className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
+          />
 
-              <p>
-                {
-                  experience.location
-                }
-              </p>
+          <input
+            type="text"
+            name="position"
+            placeholder="Position"
+            value={formData.position}
+            onChange={handleChange}
+            className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
+          />
 
-              <button
-                onClick={() =>
-                  handleDelete(
-                    experience._id
-                  )
-                }
-              >
-                Delete
-              </button>
-            </div>
-          )
-        )}
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            value={formData.location}
+            onChange={handleChange}
+            className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
+          />
+
+          <input
+            type="date"
+            name="startDate"
+            value={formData.startDate}
+            onChange={handleChange}
+            className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
+          />
+
+          <input
+            type="date"
+            name="endDate"
+            value={formData.endDate}
+            onChange={handleChange}
+            className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
+          />
+
+          <label className="flex items-center gap-3 text-slate-300">
+
+            <input
+              type="checkbox"
+              name="current"
+              checked={formData.current}
+              onChange={handleChange}
+            />
+
+            Currently Working Here
+
+          </label>
+
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleChange}
+            rows="4"
+            className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
+          />
+
+          <button
+            type="submit"
+            className="
+            w-full
+            py-3
+            rounded-2xl
+            font-bold
+            bg-gradient-to-r
+            from-cyan-500
+            to-purple-500
+            hover:scale-[1.02]
+            transition-all
+          "
+          >
+            Add Experience
+          </button>
+
+        </form>
+
       </div>
+
     </div>
-    </DashboardLayout>
-  );
+
+    <div className="lg:col-span-2">
+
+      <div
+        className="
+        bg-white/5
+        backdrop-blur-xl
+        border
+        border-white/10
+        rounded-3xl
+        p-6
+      "
+      >
+
+        <h2 className="text-2xl font-bold text-purple-300 mb-6">
+          Experience Timeline
+        </h2>
+
+        <div className="space-y-5">
+
+          {experiences.length === 0 ? (
+            <p className="text-slate-400">
+              No experience added yet.
+            </p>
+          ) : (
+            experiences.map((exp) => (
+              <div
+                key={exp._id}
+                className="
+                bg-white/5
+                border
+                border-white/10
+                rounded-3xl
+                p-5
+                hover:border-cyan-400/40
+                transition-all
+              "
+              >
+
+                <div className="flex justify-between items-start">
+
+                  <div>
+
+                    <h3 className="text-xl font-bold text-white">
+                      {exp.position}
+                    </h3>
+
+                    <p className="text-cyan-300 mt-1">
+                      {exp.company}
+                    </p>
+
+                    <p className="text-slate-400 mt-1">
+                      {exp.location}
+                    </p>
+
+                    <p className="text-slate-500 text-sm mt-2">
+                      {new Date(
+                        exp.startDate
+                      ).toLocaleDateString()}
+                      {" - "}
+                      {exp.current
+                        ? "Present"
+                        : new Date(
+                            exp.endDate
+                          ).toLocaleDateString()}
+                    </p>
+
+                    {exp.description && (
+                      <p className="text-slate-300 mt-3">
+                        {exp.description}
+                      </p>
+                    )}
+
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      handleDelete(
+                        exp._id
+                      )
+                    }
+                    className="
+                    px-4
+                    py-2
+                    rounded-xl
+                    bg-red-500/20
+                    border
+                    border-red-500/30
+                    text-red-400
+                    hover:bg-red-500/30
+                  "
+                  >
+                    Delete
+                  </button>
+
+                </div>
+
+              </div>
+            ))
+          )}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  </DashboardLayout>
+);
+
+
 };
 
 export default Experience;

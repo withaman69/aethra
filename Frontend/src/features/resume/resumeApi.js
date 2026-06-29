@@ -21,3 +21,13 @@ export const getResume = async () => {
   return response.data;
 };
 
+export const getResumeScore = async () => {
+  const response = await api.get("/resume-score");
+  return response.data;
+};
+
+export const getAdvancedResumeScore = async () => {
+  const response = await api.get("/advanced-resume-score");
+  return response.data;
+};
+

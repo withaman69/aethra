@@ -21,3 +21,15 @@ export const deleteGoal = async (id) => {
 
   return response.data;
 };
+
+
+export const updateGoal =
+  async (id, goalData) => {
+    const response =
+      await api.put(
+        `/goals/${id}`,
+        goalData
+      );
+
+    return response.data;
+  };

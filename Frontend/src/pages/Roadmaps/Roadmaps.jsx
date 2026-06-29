@@ -1,154 +1,389 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 
+import { getRoadmaps } from "../../features/roadmaps/roadmapApi";
+
 import {
-  getRoadmaps,
-} from "../../features/roadmaps/roadmapApi";
+getProgress,
+saveProgress,
+} from "../../features/roadmaps/roadmapProgressApi";
 
 const Roadmaps = () => {
-  const [roadmaps, setRoadmaps] =
-    useState([]);
+const [roadmaps, setRoadmaps] =
+useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+const [loading, setLoading] =
+useState(true);
 
-  useEffect(() => {
-    const fetchRoadmaps =
-      async () => {
-        try {
-          const data =
-            await getRoadmaps();
+const [search, setSearch] =
+useState("");
 
-          setRoadmaps(
-            data.data
-          );
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
+const [progressData, setProgressData] =
+useState({});
+
+const navigate =
+useNavigate();
+
+useEffect(() => {
+const fetchData =
+async () => {
+try {
+const roadmapRes =
+await getRoadmaps();
+
+
+      setRoadmaps(
+        roadmapRes.data || []
+      );
+
+      const progressRes =
+        await getProgress();
+
+      const progressMap =
+        {};
+
+      progressRes.data.forEach(
+        (item) => {
+          progressMap[
+            item.roadmapId?._id ||
+              item.roadmapId
+          ] =
+            item.completedSteps ||
+            [];
         }
-      };
+      );
 
-    fetchRoadmaps();
-  }, []);
+      setProgressData(
+        progressMap
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return (
-    <DashboardLayout>
-      <div className="p-6">
+fetchData();
 
-        <h1 className="text-4xl font-bold mb-8">
-          Career Roadmaps
-        </h1>
 
-        {loading ? (
-          <p>
-            Loading roadmaps...
-          </p>
-        ) : roadmaps.length ===
-          0 ? (
-          <p>
-            No roadmaps found.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+}, []);
 
-            {roadmaps.map(
-              (roadmap) => (
-                <div
-                  key={
-                    roadmap._id
-                  }
-                  className="bg-white rounded-xl shadow-md p-6 border hover:shadow-lg transition"
-                >
+const toggleStep =
+async (
+roadmapId,
+stepIndex
+) => {
+const current =
+progressData[
+roadmapId
+] || [];
 
-                  <h2 className="text-2xl font-bold mb-3">
-                    {
-                      roadmap.title
-                    }
-                  </h2>
 
-                  <p className="text-gray-600 mb-3">
-                    {
-                      roadmap.description
-                    }
-                  </p>
+  let updated;
 
-                  <div className="space-y-2">
+  if (
+    current.includes(
+      stepIndex
+    )
+  ) {
+    updated =
+      current.filter(
+        (i) =>
+          i !==
+          stepIndex
+      );
+  } else {
+    updated = [
+      ...current,
+      stepIndex,
+    ];
+  }
 
-                    <p>
-                      <span className="font-semibold">
-                        Career Path:
-                      </span>{" "}
-                      {
-                        roadmap.careerPath
-                      }
-                    </p>
+  setProgressData(
+    (prev) => ({
+      ...prev,
+      [roadmapId]:
+        updated,
+    })
+  );
 
-                    <p>
-                      <span className="font-semibold">
-                        Difficulty:
-                      </span>{" "}
-                      {
-                        roadmap.difficulty
-                      }
-                    </p>
+  try {
+    await saveProgress(
+      roadmapId,
+      updated
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-                    <p>
-                      <span className="font-semibold">
-                        Duration:
-                      </span>{" "}
-                      {
-                        roadmap.estimatedDuration
-                      }
-                    </p>
 
-                  </div>
+const filteredRoadmaps =
+roadmaps.filter(
+(roadmap) =>
+roadmap.title
+?.toLowerCase()
+.includes(
+search.toLowerCase()
+) ||
+roadmap.careerPath
+?.toLowerCase()
+.includes(
+search.toLowerCase()
+)
+);
 
-                  {roadmap.steps &&
-                    roadmap.steps
-                      .length >
-                      0 && (
-                      <div className="mt-4">
+return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
 
-                        <h3 className="font-semibold mb-2">
-                          Learning Steps
-                        </h3>
 
-                        <ul className="list-disc pl-5 space-y-1">
+  <div className="mb-10">
 
-                          {roadmap.steps.map(
-                            (
-                              step,
-                              index
-                            ) => (
-                              <li
-                                key={
-                                  index
-                                }
-                              >
-                                {
-                                  step
-                                }
-                              </li>
-                            )
-                          )}
+    <h1 className="text-5xl font-black bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+      Career Roadmaps
+    </h1>
 
-                        </ul>
+    <p className="text-slate-400 mt-3">
+      Follow structured learning paths and track progress.
+    </p>
 
-                      </div>
-                    )}
+  </div>
 
-                </div>
+  <div className="flex flex-col md:flex-row gap-4 justify-between mb-8">
+
+    <input
+      type="text"
+      placeholder="Search Roadmaps..."
+      value={search}
+      onChange={(e) =>
+        setSearch(e.target.value)
+      }
+      className="
+      md:w-96
+      bg-white/5
+      border
+      border-white/10
+      rounded-2xl
+      px-5
+      py-3
+      text-white
+      placeholder:text-slate-500
+      "
+    />
+
+  </div>
+
+  {loading ? (
+    <div className="text-center py-20 text-cyan-300 text-xl">
+      Loading Roadmaps...
+    </div>
+  ) : filteredRoadmaps.length === 0 ? (
+    <div className="text-center py-20 text-slate-400">
+      No Roadmaps Found
+    </div>
+  ) : (
+    <div className="grid xl:grid-cols-2 gap-8">
+
+      {filteredRoadmaps.map((roadmap) => {
+        const completed =
+          progressData[
+            roadmap._id
+          ] || [];
+
+        const totalSteps =
+          roadmap.steps?.length || 0;
+
+        const percentage =
+          totalSteps > 0
+            ? Math.round(
+                (completed.length /
+                  totalSteps) *
+                  100
               )
-            )}
+            : 0;
+
+        return (
+          <div
+            key={roadmap._id}
+            className="
+            bg-white/5
+            backdrop-blur-xl
+            border
+            border-white/10
+            rounded-3xl
+            p-6
+            hover:border-cyan-400/40
+            hover:shadow-[0_0_35px_rgba(34,211,238,0.15)]
+            transition-all
+            "
+          >
+
+            <div className="flex justify-between items-start mb-5">
+
+              <div>
+
+                <h2 className="text-2xl font-bold text-white">
+                  {roadmap.title}
+                </h2>
+
+                <p className="text-cyan-300 mt-2">
+                  {roadmap.careerPath}
+                </p>
+
+              </div>
+
+              <span
+                className="
+                px-3
+                py-1
+                rounded-full
+                bg-purple-500/20
+                border
+                border-purple-500/30
+                text-purple-300
+                text-sm
+                "
+              >
+                {roadmap.difficulty}
+              </span>
+
+            </div>
+
+            <p className="text-slate-300 mb-5">
+              {roadmap.description}
+            </p>
+
+            <div className="mb-6">
+
+              <div className="flex justify-between mb-2">
+
+                <span className="text-slate-400">
+                  Progress
+                </span>
+
+                <span className="text-cyan-300 font-bold">
+                  {percentage}%
+                </span>
+
+              </div>
+
+              <div className="w-full bg-slate-800 rounded-full h-3">
+
+                <div
+                  className="bg-gradient-to-r from-cyan-500 to-purple-500 h-3 rounded-full"
+                  style={{
+                    width: `${percentage}%`,
+                  }}
+                />
+
+              </div>
+
+            </div>
+
+            <div className="mb-6">
+
+              <span className="text-slate-400">
+                Estimated Duration:
+              </span>
+
+              <p className="text-white mt-1">
+                {roadmap.estimatedDuration}
+              </p>
+
+            </div>
+
+            <button
+              onClick={() =>
+                navigate(
+                  `/skill-gap/${roadmap._id}`
+                )
+              }
+              className="
+              w-full
+              mb-6
+              py-3
+              rounded-2xl
+              font-bold
+              bg-gradient-to-r
+              from-cyan-500
+              to-purple-500
+              hover:scale-[1.02]
+              transition-all
+              "
+            >
+              Analyze Skill Gap
+            </button>
+
+            <div>
+
+              <h3 className="font-bold text-white mb-4">
+                Learning Path
+              </h3>
+
+              <div className="space-y-3">
+
+                {roadmap.steps?.map(
+                  (step, index) => (
+                    <label
+                      key={index}
+                      className="
+                      flex
+                      items-center
+                      gap-3
+                      cursor-pointer
+                      p-3
+                      rounded-xl
+                      bg-white/5
+                      "
+                    >
+
+                      <input
+                        type="checkbox"
+                        checked={completed.includes(
+                          index
+                        )}
+                        onChange={() =>
+                          toggleStep(
+                            roadmap._id,
+                            index
+                          )
+                        }
+                      />
+
+                      <span
+                        className={
+                          completed.includes(
+                            index
+                          )
+                            ? "line-through text-slate-500"
+                            : "text-slate-200"
+                        }
+                      >
+                        {step}
+                      </span>
+
+                    </label>
+                  )
+                )}
+
+              </div>
+
+            </div>
 
           </div>
-        )}
+        );
+      })}
 
-      </div>
-    </DashboardLayout>
-  );
+    </div>
+  )}
+
+</div>
+
+
+  </DashboardLayout>
+);
+
 };
 
 export default Roadmaps;

@@ -1,410 +1,613 @@
-import {
-  useState,
-  useEffect,
-} from "react";
+import { useState, useEffect } from "react";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 
 import {
-  startInterview,
-  evaluateInterview,
-  getInterviewHistory,
-  submitInterview,
+startInterview,
+submitInterview,
 } from "../../features/interview/interviewApi";
 
 const Interview = () => {
-  const [role, setRole] =
-    useState("");
+const [role, setRole] =
+useState("");
 
-  const [level, setLevel] =
-    useState("Beginner");
+const [level, setLevel] =
+useState("Beginner");
 
-  const [questions, setQuestions] =
-    useState([]);
+const [interview, setInterview] =
+useState(null);
 
-  const [
-    interviewId,
-    setInterviewId,
-  ] = useState(null);
+const [answers, setAnswers] =
+useState([]);
 
-  const [answer, setAnswer] =
-    useState("");
+const [result, setResult] =
+useState(null);
 
-  const [
-    evaluation,
-    setEvaluation,
-  ] = useState(null);
+const [isListening, setIsListening] =
+useState(false);
 
-  const [
-    history,
-    setHistory,
-  ] = useState([]);
+const [recognition, setRecognition] =
+useState(null);
 
-  const [
-    finalResult,
-    setFinalResult,
-  ] = useState(null);
+useEffect(() => {
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
 
-  const handleGenerate =
-    async () => {
-      try {
-        const data =
-          await startInterview(
-            role,
-            level
-          );
+if (!SpeechRecognition) {
+  console.log(
+    "Speech Recognition not supported"
+  );
+  return;
+}
 
-        setInterviewId(
-          data.data._id
-        );
+const recognitionInstance =
+  new SpeechRecognition();
 
-        setQuestions(
-          data.data.questions
-        );
+recognitionInstance.continuous =
+  false;
 
-        setAnswer("");
+recognitionInstance.interimResults =
+  false;
 
-        setEvaluation(
-          null
-        );
+recognitionInstance.lang =
+  "en-US";
 
-        setFinalResult(
-          null
-        );
-      } catch (error) {
-        console.error(error);
+recognitionInstance.onend =
+  () => {
+    setIsListening(false);
+  };
 
-        alert(
-          "Failed to start interview"
-        );
-      }
-    };
+setRecognition(
+  recognitionInstance
+);
 
-  const handleEvaluate =
-    async (question) => {
-      try {
-        const data =
-          await evaluateInterview(
-            question,
-            answer
-          );
 
-        setEvaluation(data);
-      } catch (error) {
-        console.error(error);
+}, []);
 
-        alert(
-          "Failed to evaluate answer"
-        );
-      }
-    };
+const startListening = (index) => {
+  console.log("startListening called");
 
-  const handleSubmitInterview =
-    async () => {
-      try {
-        const answers = [
-          {
-            question:
-              questions[0],
-            answer,
-          },
-        ];
+  if (!recognition) {
+    console.log("Recognition is null");
+    alert(
+      "Speech Recognition is not available."
+    );
+    return;
+  }
 
-        const data =
-          await submitInterview(
-            interviewId,
-            answers
-          );
+  recognition.onstart = () => {
+    console.log("Recording Started");
+    setIsListening(true);
+  };
 
-        setFinalResult(data);
+  recognition.onend = () => {
+    console.log("Recording Ended");
+    setIsListening(false);
+  };
 
-        fetchHistory();
-      } catch (error) {
-        console.error(error);
+  recognition.onerror = (event) => {
+    console.log(
+      "Speech Error:",
+      event.error
+    );
 
-        alert(
-          "Failed to submit interview"
-        );
-      }
-    };
+    setIsListening(false);
 
-  const fetchHistory =
-    async () => {
-      try {
-        const data =
-          await getInterviewHistory();
+    alert(
+      `Speech Recognition Error: ${event.error}`
+    );
+  };
 
-        setHistory(
-          data.data
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    };
+ recognition.onresult = (event) => {
+  const transcript =
+    event.results[0][0].transcript;
 
-  useEffect(() => {
-    fetchHistory();
-  }, []);
+  console.log(
+    "Transcript:",
+    transcript
+  );
 
-  return (
-    <DashboardLayout>
-      <div className="max-w-5xl mx-auto p-6">
+  setAnswers((prev) => {
+    const updated = [
+      ...prev,
+    ];
 
-        <h1 className="text-4xl font-bold mb-8">
-          Mock Interview
+    updated[index] =
+      (updated[index] || "") +
+      " " +
+      transcript;
+
+    return updated;
+  });
+};
+
+  try {
+    recognition.start();
+  } catch (error) {
+    console.log(
+      "Start Error:",
+      error
+    );
+  }
+};
+
+const stopListening = () => {
+  if (recognition) {
+    recognition.stop();
+
+    setIsListening(
+      false
+    );
+  }
+};
+
+const speakQuestion = (
+question
+) => {
+const speech =
+new SpeechSynthesisUtterance(
+question
+);
+
+
+speech.rate = 1;
+
+speech.pitch = 1;
+
+window.speechSynthesis.speak(
+  speech
+);
+
+
+};
+
+const handleStart =
+async () => {
+try {
+const data =
+await startInterview(
+role,
+level
+);
+
+    setInterview(
+      data.data
+    );
+
+    setAnswers(
+      new Array(
+        data.data.questions.length
+      ).fill("")
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+const handleAnswerChange = (
+index,
+value
+) => {
+const updated =
+[...answers];
+
+updated[index] =
+  value;
+
+setAnswers(updated);
+
+};
+
+const handleSubmit =
+async () => {
+try {
+const formattedAnswers =
+interview.questions.map(
+(
+question,
+index
+) => ({
+question,
+answer:
+answers[
+index
+],
+})
+);
+
+    const data =
+      await submitInterview(
+        {
+          interviewId:
+            interview._id,
+          answers:
+            formattedAnswers,
+        }
+      );
+
+    setResult(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+return (
+  <DashboardLayout>
+    <div className="max-w-7xl mx-auto p-8">
+
+      {/* Header */}
+
+      <div className="mb-10">
+
+        <h1
+          className="
+          text-5xl
+          font-black
+          bg-gradient-to-r
+          from-cyan-400
+          via-blue-400
+          to-purple-500
+          bg-clip-text
+          text-transparent
+        "
+        >
+          AI Mock Interview
         </h1>
 
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+        <p className="text-slate-400 mt-3">
+          Practice real interview questions with AI.
+        </p>
 
-          <div className="mb-4">
-            <label className="block mb-2 font-medium">
-              Target Role
-            </label>
+      </div>
 
-            <input
-              type="text"
-              placeholder="Frontend Developer / Backend Developer / Full Stack Developer"
-              value={role}
-              onChange={(e) =>
-                setRole(
-                  e.target.value
-                )
-              }
-              className="w-full border rounded-lg p-3"
-            />
-          </div>
+      {/* Interview Setup */}
 
-          <div className="mb-6">
-            <label className="block mb-2 font-medium">
-              Experience Level
-            </label>
+      {!interview && (
+        <div
+          className="
+          max-w-2xl
+          mx-auto
+          bg-white/5
+          backdrop-blur-xl
+          border
+          border-white/10
+          rounded-3xl
+          p-8
+        "
+        >
 
-            <select
-              value={level}
-              onChange={(e) =>
-                setLevel(
-                  e.target.value
-                )
-              }
-              className="w-full border rounded-lg p-3"
-            >
-              <option>
-                Beginner
-              </option>
+          <h2 className="text-2xl font-bold text-cyan-300 mb-6">
+            Start Interview
+          </h2>
 
-              <option>
-                Intermediate
-              </option>
+          <input
+            type="text"
+            placeholder="Full Stack Developer"
+            value={role}
+            onChange={(e) =>
+              setRole(e.target.value)
+            }
+            className="
+            w-full
+            bg-white/5
+            border
+            border-white/10
+            rounded-2xl
+            p-4
+            text-white
+            mb-6
+          "
+          />
 
-              <option>
-                Advanced
-              </option>
-            </select>
+          {/* Level Selector */}
+
+          <div className="grid grid-cols-3 gap-4 mb-6">
+
+            {[
+              "Beginner",
+              "Intermediate",
+              "Advanced",
+            ].map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() =>
+                  setLevel(item)
+                }
+                className={`
+                  p-4
+                  rounded-2xl
+                  border
+                  transition-all
+
+                  ${
+                    level === item
+                      ? `
+                      bg-gradient-to-r
+                      from-cyan-500/20
+                      to-purple-500/20
+                      border-cyan-400/40
+                      text-cyan-300
+                    `
+                      : `
+                      bg-white/5
+                      border-white/10
+                      text-slate-400
+                    `
+                  }
+                `}
+              >
+                {item}
+              </button>
+            ))}
+
           </div>
 
           <button
-            onClick={
-              handleGenerate
-            }
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
+            onClick={handleStart}
+            className="
+            w-full
+            py-4
+            rounded-2xl
+            font-bold
+            bg-gradient-to-r
+            from-cyan-500
+            to-purple-500
+            hover:scale-[1.02]
+            transition-all
+          "
           >
-            Generate Questions
+            Start Interview
           </button>
 
         </div>
+      )}
 
-        {questions.length >
-          0 && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+      {/* Questions */}
 
-            <h2 className="text-2xl font-bold mb-6">
-              Interview Questions
+      {interview && !result && (
+        <div
+          className="
+          bg-white/5
+          backdrop-blur-xl
+          border
+          border-white/10
+          rounded-3xl
+          p-8
+        "
+        >
+
+          <div className="flex justify-between items-center mb-8">
+
+            <h2 className="text-3xl font-bold text-purple-300">
+              Interview Session
             </h2>
 
-            <div className="space-y-6">
+            <span
+              className="
+              bg-cyan-500/20
+              border
+              border-cyan-500/30
+              px-4
+              py-2
+              rounded-full
+              text-cyan-300
+            "
+            >
+              {level}
+            </span>
 
-              {questions.map(
-                (
-                  question,
-                  index
-                ) => (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-4"
-                  >
-                    <p className="font-medium mb-4">
-                      Q
-                      {index + 1}
-                      .{" "}
-                      {
-                        question
-                      }
-                    </p>
+          </div>
 
-                    <textarea
-                      rows="4"
-                      value={
-                        answer
-                      }
-                      onChange={(e) =>
-                        setAnswer(
-                          e.target
-                            .value
+          <div className="space-y-8">
+
+            {interview.questions.map(
+              (question, index) => (
+                <div
+                  key={index}
+                  className="
+                  bg-white/5
+                  border
+                  border-white/10
+                  rounded-3xl
+                  p-6
+                "
+                >
+
+                  <div className="flex justify-between items-center mb-4">
+
+                    <h3 className="text-xl font-bold text-white">
+                      Q{index + 1}. {question}
+                    </h3>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        speakQuestion(
+                          question
                         )
                       }
-                      placeholder="Write your answer..."
-                      className="w-full border rounded-lg p-3"
-                    />
-
-                    <div className="flex gap-3 mt-4">
-
-                      <button
-                        onClick={() =>
-                          handleEvaluate(
-                            question
-                          )
-                        }
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-                      >
-                        Evaluate Answer
-                      </button>
-
-                      <button
-                        onClick={
-                          handleSubmitInterview
-                        }
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg"
-                      >
-                        Submit Interview
-                      </button>
-
-                    </div>
+                      className="
+                      bg-purple-500/20
+                      border
+                      border-purple-500/30
+                      px-4
+                      py-2
+                      rounded-xl
+                    "
+                    >
+                      🔊 Read
+                    </button>
 
                   </div>
-                )
-              )}
 
-            </div>
-
-          </div>
-        )}
-
-        {evaluation && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-
-            <h2 className="text-2xl font-bold mb-4">
-              Evaluation Result
-            </h2>
-
-            <p className="text-lg">
-              <strong>
-                Score:
-              </strong>{" "}
-              {
-                evaluation.score
-              }
-              /10
-            </p>
-
-            <p className="mt-3">
-              <strong>
-                Feedback:
-              </strong>{" "}
-              {
-                evaluation.feedback
-              }
-            </p>
-
-          </div>
-        )}
-
-        {finalResult && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-
-            <h2 className="text-2xl font-bold mb-4">
-              Final Interview Result
-            </h2>
-
-            <p>
-              <strong>
-                Score:
-              </strong>{" "}
-              {
-                finalResult.score
-              }
-            </p>
-
-            <p className="mt-2">
-              <strong>
-                Feedback:
-              </strong>{" "}
-              {finalResult.feedback?.join(
-                ", "
-              )}
-            </p>
-
-          </div>
-        )}
-
-        {history.length >
-          0 && (
-          <div className="bg-white rounded-xl shadow-md p-6">
-
-            <h2 className="text-2xl font-bold mb-4">
-              Interview History
-            </h2>
-
-            <div className="space-y-4">
-
-              {history.map(
-                (
-                  item
-                ) => (
-                  <div
-                    key={
-                      item._id
+                  <textarea
+                    rows="5"
+                    value={
+                      answers[index]
                     }
-                    className="border rounded-lg p-4"
-                  >
-                    <p>
-                      <strong>
-                        Role:
-                      </strong>{" "}
-                      {
-                        item.role
-                      }
-                    </p>
+                    onChange={(e) =>
+                      handleAnswerChange(
+                        index,
+                        e.target.value
+                      )
+                    }
+                    placeholder="Type your answer..."
+                    className="
+                    w-full
+                    bg-black/20
+                    border
+                    border-white/10
+                    rounded-2xl
+                    p-4
+                    text-white
+                  "
+                  />
 
-                    <p>
-                      <strong>
-                        Score:
-                      </strong>{" "}
-                      {
-                        item.score
-                      }
-                    </p>
+                  <div className="flex gap-3 mt-4">
 
-                    <p>
-                      <strong>
-                        Date:
-                      </strong>{" "}
-                      {new Date(
-                        item.createdAt
-                      ).toLocaleDateString()}
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        startListening(
+                          index
+                        )
+                      }
+                      className="
+                      bg-cyan-500/20
+                      border
+                      border-cyan-500/30
+                      px-4
+                      py-3
+                      rounded-xl
+                    "
+                    >
+                      {isListening
+                        ? "🎙 Listening..."
+                        : "🎤 Record"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={
+                        stopListening
+                      }
+                      className="
+                      bg-red-500/20
+                      border
+                      border-red-500/30
+                      px-4
+                      py-3
+                      rounded-xl
+                    "
+                    >
+                      🛑 Stop
+                    </button>
 
                   </div>
-                )
-              )}
 
-            </div>
+                </div>
+              )
+            )}
 
           </div>
-        )}
 
-      </div>
-    </DashboardLayout>
-  );
+          <button
+            onClick={handleSubmit}
+            className="
+            mt-8
+            w-full
+            py-4
+            rounded-2xl
+            font-bold
+            bg-gradient-to-r
+            from-green-500
+            to-emerald-500
+          "
+          >
+            Submit Interview
+          </button>
+
+        </div>
+      )}
+
+      {/* Result */}
+
+      {result && (
+        <div
+          className="
+          max-w-3xl
+          mx-auto
+          bg-white/5
+          backdrop-blur-xl
+          border
+          border-white/10
+          rounded-3xl
+          p-10
+          text-center
+        "
+        >
+
+          <h2
+            className="
+            text-5xl
+            font-black
+            bg-gradient-to-r
+            from-green-400
+            to-cyan-400
+            bg-clip-text
+            text-transparent
+            mb-8
+          "
+          >
+            Interview Result
+          </h2>
+
+          <div
+            className="
+            text-7xl
+            font-black
+            text-cyan-300
+            mb-6
+          "
+          >
+            {result.score}
+          </div>
+
+          <div
+            className="
+            bg-white/5
+            border
+            border-white/10
+            rounded-3xl
+            p-6
+          "
+          >
+
+            <h3 className="text-2xl font-bold mb-4">
+              AI Feedback
+            </h3>
+
+            <p className="text-slate-300 leading-relaxed">
+              {Array.isArray(
+                result.feedback
+              )
+                ? result.feedback.join(
+                    ", "
+                  )
+                : result.feedback}
+            </p>
+
+          </div>
+
+        </div>
+      )}
+
+    </div>
+  </DashboardLayout>
+);
 };
 
 export default Interview;

@@ -32,6 +32,11 @@ const roadmapSchema =
         type: String,
         default: "",
       },
+      skills: [
+  {
+    type: String,
+  },
+],
 
       steps: [
         {

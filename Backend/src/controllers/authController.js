@@ -139,10 +139,35 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   await user.save();
 
+  const resetUrl =
+    `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+  await sendEmail({
+    email: user.email,
+    subject: "Aethra Password Reset",
+    mailgenContent: {
+      body: {
+        name: user.name || "User",
+        intro:
+          "You requested a password reset.",
+        action: {
+          instructions:
+            "Click the button below to reset your password:",
+          button: {
+            color: "#22BC66",
+            text: "Reset Password",
+            link: resetUrl,
+          },
+        },
+        outro:
+          "If you did not request this, ignore this email.",
+      },
+    },
+  });
+
   res.status(200).json({
     success: true,
-    message: "Reset token generated",
-    resetToken,
+    message: "Password reset email sent",
   });
 });
 

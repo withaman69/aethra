@@ -132,12 +132,19 @@ const forgotPassword = asyncHandler(async (req, res) => {
     .randomBytes(20)
     .toString("hex");
 
-  user.resetPasswordToken = resetToken;
+ console.log("GENERATED TOKEN:", resetToken);
 
-  user.resetPasswordExpire =
-    Date.now() + 15 * 60 * 1000;
+user.resetPasswordToken = resetToken;
 
-  await user.save();
+user.resetPasswordExpire =
+  Date.now() + 15 * 60 * 1000;
+
+await user.save();
+
+console.log(
+  "SAVED TOKEN:",
+  user.resetPasswordToken
+);
 
   const resetUrl =
     `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
@@ -175,11 +182,13 @@ const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
 
-  const user = await User.findOne({
-    resetPasswordToken: token,
-    resetPasswordExpire: { $gt: Date.now() },
-  });
+console.log("TOKEN FROM URL:", token);
 
+const user = await User.findOne({
+  resetPasswordToken: token,
+});
+
+console.log("FOUND USER:", user);
   if (!user) {
     throw new CustomError(
       "Invalid or expired token",

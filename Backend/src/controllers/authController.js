@@ -172,7 +172,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
-  const { token, password } = req.body;
+  const { token } = req.params;
+  const { password } = req.body;
 
   const user = await User.findOne({
     resetPasswordToken: token,
@@ -186,12 +187,10 @@ const resetPassword = asyncHandler(async (req, res) => {
     );
   }
 
-  const hashedPassword = await bcrypt.hash(
+  user.password = await bcrypt.hash(
     password,
     10
   );
-
-  user.password = hashedPassword;
 
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;

@@ -1,34 +1,29 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const Mailgen = require("mailgen");
 
-const sendEmail = async (options) => {
-  const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_HOST,
-    port: process.env.MAIL_PORT,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
-    },
-  });
+const resend = new Resend(
+  process.env.RESEND_API_KEY
+);
 
+const sendEmail = async (options) => {
   const mailGenerator = new Mailgen({
     theme: "default",
     product: {
       name: "Aethra",
-      link: "https://aethra.com",
+      link: "https://aethra-one.vercel.app",
     },
   });
 
-  const emailBody = mailGenerator.generate(options.mailgenContent);
+  const emailBody = mailGenerator.generate(
+    options.mailgenContent
+  );
 
-  const mailOptions = {
-    from: process.env.MAIL_FROM,
+  await resend.emails.send({
+    from: "Aethra <onboarding@resend.dev>",
     to: options.email,
     subject: options.subject,
     html: emailBody,
-  };
-
-  await transporter.sendMail(mailOptions);
+  });
 };
 
 module.exports = sendEmail;

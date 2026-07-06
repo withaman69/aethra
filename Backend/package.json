@@ -30,6 +30,7 @@
     "openai": "^6.44.0",
     "pdfkit": "^0.19.1",
     "react-countup": "^6.5.3",
+    "resend": "^6.17.1",
     "validator": "^13.15.35"
   },
   "devDependencies": {

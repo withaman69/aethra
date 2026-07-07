@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { uploadResume } from "../../features/resume/resumeApi";
+import { uploadResume, getResume, deleteResume } from "../../features/resume/resumeApi";
 
 const Resume = () => {
 const [file, setFile] = useState(null);
 const [loading, setLoading] = useState(false);
+const [resumeUrl, setResumeUrl] =
+  useState("");
+const [fetching, setFetching] = useState(true);
 
+  useEffect(() => {
+  fetchResume();
+}, []);
+
+const fetchResume = async () => {
+  try {
+    const res = await getResume();
+    setResumeUrl(res.resume || "");
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setFetching(false);
+  }
+};
+  
 const handleUpload = async () => {
 if (!file) {
 alert("Select a PDF Resume");
@@ -17,7 +35,9 @@ try {
   setLoading(true);
 
   const data = await uploadResume(file);
-
+setResumeUrl(
+  data.resume
+);
   console.log(data);
 
   alert("Resume Uploaded Successfully");
@@ -31,7 +51,28 @@ try {
 
 
 };
+const handleDelete = async () => {
+  try {
+    await deleteResume();
 
+    setResumeUrl("");
+    setFile(null);
+
+    alert("Resume Deleted");
+  } catch (error) {
+    console.log(error);
+    alert("Delete Failed");
+  }
+};
+if (fetching) {
+  return (
+    <DashboardLayout>
+      <div className="p-8 text-white">
+        Loading Resume...
+      </div>
+    </DashboardLayout>
+  );
+}
 return ( <DashboardLayout> <div className="max-w-6xl mx-auto p-8">
 
     <div className="mb-10">
@@ -160,10 +201,30 @@ return ( <DashboardLayout> <div className="max-w-6xl mx-auto p-8">
           </h3>
 
           <p className="text-slate-300">
-            {file
-              ? "Resume Selected"
-              : "No Resume Uploaded"}
-          </p>
+  {resumeUrl
+    ? "Resume Uploaded"
+    : "No Resume Uploaded"}
+</p>
+
+{resumeUrl && (
+  <div className="mt-4 space-y-3">
+    <a
+      href={resumeUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="block text-cyan-400 hover:underline"
+    >
+      View Resume
+    </a>
+
+    <button
+      onClick={handleDelete}
+      className="px-4 py-2 rounded-lg bg-red-500 text-white"
+    >
+      Delete Resume
+    </button>
+  </div>
+)}
 
         </div>
 

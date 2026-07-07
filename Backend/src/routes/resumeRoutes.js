@@ -11,6 +11,7 @@ const upload =
 const {
   uploadResume,
   getResume,
+  deleteResume
 } = require(
   "../controllers/resumeController"
 );
@@ -27,5 +28,9 @@ router.get(
   protect,
   getResume
 );
-
+router.delete(
+  "/",
+  protect,
+  deleteResume
+);
 module.exports = router;

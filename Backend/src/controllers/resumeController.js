@@ -64,7 +64,45 @@ const getResume =
     }
   };
 
+  const deleteResume = async (
+  req,
+  res
+) => {
+  try {
+    const user =
+      await User.findById(
+        req.user.id
+      );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "User not found",
+      });
+    }
+
+    user.resume = "";
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Resume deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message:
+        "Server Error",
+    });
+  }
+};
 module.exports = {
   uploadResume,
   getResume,
+  deleteResume,
 };

@@ -69,6 +69,12 @@ const profileFields = [
   profile?.email,
   profile?.bio,
   profile?.occupation,
+  profile?.headline,
+  profile?.location,
+  profile?.linkedin,
+  profile?.github,
+  profile?.portfolio,
+  profile?.phone,
   profile?.skills?.length > 0,
   profile?.goals?.length > 0,
   profile?.resume,
@@ -78,11 +84,13 @@ const completedFields =
   profileFields.filter(Boolean).length;
 
 const profileCompletion =
-  Math.round(
-    (completedFields /
-      profileFields.length) *
-      100
-  );
+  profile
+    ? Math.round(
+        (completedFields /
+          profileFields.length) *
+          100
+      )
+    : 0;
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -143,6 +151,15 @@ const profileCompletion =
         );
       }
     };
+    if (loading) {
+  return (
+    <DashboardLayout>
+      <div className="p-10 text-white">
+        Loading Profile...
+      </div>
+    </DashboardLayout>
+  );
+}
 
 return (
    <DashboardLayout>
@@ -292,34 +309,81 @@ return (
             Career Information
           </h2>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
 
-            <div>
-              <span className="text-slate-400">
-                Career Level:
-              </span>
+  <div>
+    <span className="text-slate-400">
+      Career Level:
+    </span>
 
-              <p className="text-white font-semibold capitalize">
-                {profile?.careerLevel || "Student"}
-              </p>
+    <p className="text-white font-semibold capitalize">
+      {profile?.careerLevel || "Student"}
+    </p>
+  </div>
 
-            </div>
+  <div>
+    <span className="text-slate-400">
+      Occupation:
+    </span>
 
-            <div>
-              <span className="text-slate-400">
-                Occupation:
-              </span>
+    <p className="text-white font-semibold">
+      {profile?.occupation || "Not Added"}
+    </p>
+  </div>
 
-              <p className="text-white font-semibold">
-                {profile?.occupation ||
-                  "Not Added"}
-              </p>
+  {profile?.linkedin && (
+    <div>
+      <span className="text-slate-400">
+        LinkedIn:
+      </span>
 
-            </div>
+      <a
+        href={profile.linkedin}
+        target="_blank"
+        rel="noreferrer"
+        className="block text-cyan-400 hover:underline"
+      >
+        Open LinkedIn Profile
+      </a>
+    </div>
+  )}
 
-          </div>
+  {profile?.github && (
+    <div>
+      <span className="text-slate-400">
+        GitHub:
+      </span>
 
-        </div>
+      <a
+        href={profile.github}
+        target="_blank"
+        rel="noreferrer"
+        className="block text-cyan-400 hover:underline"
+      >
+        Open GitHub Profile
+      </a>
+    </div>
+  )}
+
+  {profile?.portfolio && (
+    <div>
+      <span className="text-slate-400">
+        Portfolio:
+      </span>
+
+      <a
+        href={profile.portfolio}
+        target="_blank"
+        rel="noreferrer"
+        className="block text-cyan-400 hover:underline"
+      >
+        Open Portfolio
+      </a>
+    </div>
+  )}
+
+</div>
+</div>
 
       </div>
 

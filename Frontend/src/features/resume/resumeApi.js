@@ -31,3 +31,12 @@ export const getAdvancedResumeScore = async () => {
   return response.data;
 };
 
+export const deleteResume =
+  async () => {
+    const response =
+      await api.delete(
+        "/resume"
+      );
+
+    return response.data;
+  };

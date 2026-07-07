@@ -55,9 +55,14 @@ const Education = () => {
       e.preventDefault();
 
       try {
-        await createEducation(
-          formData
-        );
+        const payload = {
+  ...formData,
+  endDate: formData.current
+    ? null
+    : formData.endDate,
+};
+
+await createEducation(payload);
 
         alert(
           "Education Added"
@@ -163,14 +168,14 @@ const Education = () => {
             onChange={handleChange}
             className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
           />
-
-          <input
-            type="date"
-            name="endDate"
-            value={formData.endDate}
-            onChange={handleChange}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
-          />
+<input
+  type="date"
+  name="endDate"
+  value={formData.endDate}
+  onChange={handleChange}
+  disabled={formData.current}
+  className="w-full bg-white/5 border border-white/10 rounded-2xl p-3 text-white"
+/>
 
           <label className="flex items-center gap-3 text-slate-300">
 
@@ -270,6 +275,19 @@ const Education = () => {
                     <p className="text-slate-400 mt-1">
                       {edu.fieldOfStudy}
                     </p>
+                    <p className="text-sm text-slate-500 mt-2">
+  {new Date(
+    edu.startDate
+  ).toLocaleDateString()}
+  {" - "}
+  {edu.current
+    ? "Present"
+    : edu.endDate
+    ? new Date(
+        edu.endDate
+      ).toLocaleDateString()
+    : "N/A"}
+</p>
 
                     {edu.description && (
                       <p className="text-slate-300 mt-3">

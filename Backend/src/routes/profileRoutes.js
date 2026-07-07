@@ -13,9 +13,7 @@ const {
 } = require(
   "../controllers/profileController"
 );
-const upload = require(
-  "../middlewares/upload"
-);
+const upload = require("../middlewares/cloudinaryUpload");
 
 router.get(
   "/",

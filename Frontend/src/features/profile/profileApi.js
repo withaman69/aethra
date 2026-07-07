@@ -18,3 +18,27 @@ export const updateProfile = async (
 
   return response.data;
 };
+export const updateAvatar =
+  async (file) => {
+    const formData =
+      new FormData();
+
+    formData.append(
+      "avatar",
+      file
+    );
+
+    const response =
+      await api.put(
+        "/profile/avatar",
+        formData,
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
+      );
+
+    return response.data;
+  };

@@ -8,8 +8,8 @@ import AvatarUpload from "../../components/profile/AvatarUpload";
 import {
   getProfile,
   updateProfile,
+  updateAvatar,
 } from "../../features/profile/profileApi";
-
 import {
   setProfile,
   setLoading,
@@ -28,6 +28,41 @@ const Profile = () => {
   );
   const [showForm, setShowForm] =
   useState(false);
+  const handleAvatarUpload =
+  async (e) => {
+    const file =
+      e.target.files[0];
+
+    if (!file) return;
+
+    try {
+      dispatch(setLoading(true));
+
+      const res =
+        await updateAvatar(file);
+
+      dispatch(
+        setProfile({
+          ...profile,
+          avatar: res.avatar,
+        })
+      );
+
+      alert(
+        "Avatar updated successfully"
+      );
+    } catch (err) {
+      alert(
+        err?.response?.data
+          ?.message ||
+          "Avatar upload failed"
+      );
+    } finally {
+      dispatch(
+        setLoading(false)
+      );
+    }
+  };
 const profileFields = [
   profile?.avatar,
   profile?.name,
@@ -109,7 +144,9 @@ const profileCompletion =
       }
     };
 
-return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
+return (
+   <DashboardLayout>
+     <div className="max-w-7xl mx-auto p-8">
 
 
   <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden">
@@ -121,23 +158,57 @@ return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
 
       <div className="-mt-20 flex flex-col md:flex-row md:items-end gap-6">
 
-        <img
-          src={
-            profile?.avatar ||
-            "https://ui-avatars.com/api/?name=Aethra"
-          }
-          alt="avatar"
-          className="
-          w-40
-          h-40
-          rounded-full
-          border-4
-          border-cyan-400
-          object-cover
-          bg-black
-          shadow-[0_0_30px_rgba(34,211,238,0.4)]
-          "
-        />
+       <div className="relative">
+
+  <img
+    src={
+      profile?.avatar ||
+      "https://ui-avatars.com/api/?name=Aethra"
+    }
+    alt="avatar"
+    className="
+    w-40
+    h-40
+    rounded-full
+    border-4
+    border-cyan-400
+    object-cover
+    bg-black
+    shadow-[0_0_30px_rgba(34,211,238,0.4)]
+    "
+  />
+
+  <label
+    className="
+    absolute
+    bottom-2
+    right-2
+    w-12
+    h-12
+    rounded-full
+    bg-cyan-500
+    flex
+    items-center
+    justify-center
+    cursor-pointer
+    shadow-lg
+    hover:scale-110
+    transition-all
+    "
+  >
+    📷
+
+    <input
+      type="file"
+      accept="image/*"
+      className="hidden"
+      onChange={
+        handleAvatarUpload
+      }
+    />
+  </label>
+
+</div>
 
         <div>
 

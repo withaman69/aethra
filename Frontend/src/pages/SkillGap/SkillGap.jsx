@@ -76,14 +76,22 @@ return (
 
 <div className="p-8 max-w-7xl mx-auto">
 
-<h1 className="text-4xl font-bold mb-8">
-Skill Gap Analysis
+<h1 className="text-5xl font-black mb-8 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+  Skill Gap Analysis
 </h1>
 
 <div className="grid lg:grid-cols-3 gap-8">
 
-<div className="bg-white rounded-2xl shadow-lg p-8">
-
+<div
+  className="
+  bg-white/5
+  backdrop-blur-xl
+  border
+  border-white/10
+  rounded-3xl
+  p-8
+  "
+>
 <h2 className="text-xl font-bold mb-6">
 Match Score
 </h2>
@@ -91,20 +99,38 @@ Match Score
 <div className="w-48 mx-auto">
 
 <CircularProgressbar
-value={
-result.completion
-}
-text={`${result.completion}%`}
+  value={result.completion}
+  text={`${result.completion}%`}
+  styles={{
+    path: {
+      stroke: "#22d3ee",
+    },
+    text: {
+      fill: "#22d3ee",
+      fontSize: "16px",
+      fontWeight: "bold",
+    },
+    trail: {
+      stroke: "#1e293b",
+    },
+  }}
 />
 
 </div>
 
 </div>
 
-<div className="bg-white rounded-2xl shadow-lg p-8">
-
-<h2 className="text-xl font-bold mb-4 text-green-600">
-
+<div
+  className="
+  bg-white/5
+  backdrop-blur-xl
+  border
+  border-green-500/20
+  rounded-3xl
+  p-8
+  "
+>
+<h2 className="text-xl font-bold mb-4 text-green-400">
 Matched Skills
 
 </h2>
@@ -116,7 +142,15 @@ Matched Skills
 
 <div
 key={skill}
-className="bg-green-100 text-green-700 px-4 py-2 rounded-lg"
+className="
+bg-green-500/10
+border
+border-green-500/20
+text-green-300
+px-4
+py-3
+rounded-xl
+"
 >
 
 ✓ {skill}
@@ -130,9 +164,17 @@ className="bg-green-100 text-green-700 px-4 py-2 rounded-lg"
 
 </div>
 
-<div className="bg-white rounded-2xl shadow-lg p-8">
-
-<h2 className="text-xl font-bold mb-4 text-red-600">
+<div
+  className="
+  bg-white/5
+  backdrop-blur-xl
+  border
+  border-red-500/20
+  rounded-3xl
+  p-8
+  "
+>
+<h2 className="text-xl font-bold mb-4 text-red-400">
 
 Missing Skills
 
@@ -145,7 +187,15 @@ Missing Skills
 
 <div
 key={skill}
-className="bg-red-100 text-red-700 px-4 py-2 rounded-lg"
+className="
+bg-red-500/10
+border
+border-red-500/20
+text-red-300
+px-4
+py-3
+rounded-xl
+"
 >
 
 ✗ {skill}
@@ -161,19 +211,28 @@ className="bg-red-100 text-red-700 px-4 py-2 rounded-lg"
 
 </div>
 
-<div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
-
+<div
+  className="
+  bg-white/5
+  backdrop-blur-xl
+  border
+  border-white/10
+  rounded-3xl
+  p-8
+  mt-8
+  "
+>
 <h2 className="text-2xl font-bold mb-4">
 Recommendations
 </h2>
 
-<p className="text-lg">
+<p className="text-lg text-slate-300">
 
 Focus on learning:
 
 </p>
 
-<ul className="list-disc pl-6 mt-4">
+<ul className="list-disc pl-6 mt-4 text-slate-300">
 
 {result.missingSkills.map(
 (skill) => (

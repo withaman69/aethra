@@ -4,7 +4,7 @@ import {
   useRef,
 } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-
+import api from "../../services/api";
 const AIMentor = () => {
   const [chats, setChats] = useState(() => {
     const saved = localStorage.getItem("mentorChats");
@@ -155,7 +155,7 @@ const stopVoiceInput = () => {
     recognition.stop();
   }
 };
- const handleSend = () => {
+const handleSend = async () => {
   if (!input.trim()) return;
 
   const userMessage = {
@@ -174,10 +174,19 @@ const stopVoiceInput = () => {
 
   setIsTyping(true);
 
-  setTimeout(() => {
+  try {
+    const res = await api.post(
+      "/ai-mentor/ask",
+      {
+        message: currentInput,
+      }
+    );
+
     const aiMessage = {
       sender: "ai",
-      text: `I understand your question about "${currentInput}". AI integration will be connected soon.`,
+      text:
+        res.data.response ||
+        "No response received.",
     };
 
     const updatedMessages = [
@@ -207,9 +216,20 @@ const stopVoiceInput = () => {
           : chat
       )
     );
+  } catch (error) {
+    console.error(error);
 
+    setMessages((prev) => [
+      ...prev,
+      {
+        sender: "ai",
+        text:
+          "Unable to connect to Aethra AI Mentor.",
+      },
+    ]);
+  } finally {
     setIsTyping(false);
-  }, 2000);
+  }
 };
 
   return (

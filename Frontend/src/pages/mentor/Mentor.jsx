@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-
+import api from "../../services/api";
 const Mentor = () => {
 const [messages, setMessages] =
 useState([
@@ -16,6 +16,7 @@ useState("");
 
 const [thinking, setThinking] =
 useState(false);
+
 
 const sendMessage = () => {
 if (!input.trim()) return;

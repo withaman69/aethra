@@ -4,31 +4,31 @@ const {
   "../services/aiRoadmapGeneratorService"
 );
 
-const generateCareerRoadmap =
+const generateRoadmapController =
   async (req, res) => {
     try {
       const {
         careerGoal,
-        careerLevel,
+        currentSkills,
       } = req.body;
 
       if (!careerGoal) {
         return res.status(400).json({
           success: false,
           message:
-            "Career goal is required",
+            "Career goal required",
         });
       }
 
       const roadmap =
-        generateRoadmap(
+        await generateRoadmap(
           careerGoal,
-          careerLevel
+          currentSkills || []
         );
 
       res.status(200).json({
         success: true,
-        roadmap,
+        data: roadmap,
       });
     } catch (error) {
       console.error(error);
@@ -42,5 +42,5 @@ const generateCareerRoadmap =
   };
 
 module.exports = {
-  generateCareerRoadmap,
+  generateRoadmapController,
 };

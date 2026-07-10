@@ -14,11 +14,12 @@ const interviewSchema =
         required: true,
       },
 
-      questions: [
-        {
-          type: String,
-        },
-      ],
+     questions: [
+  {
+    question: String,
+    type: String,
+  },
+],
 
       answers: [
         {

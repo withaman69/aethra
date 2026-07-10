@@ -5,7 +5,9 @@ const router =
   express.Router();
 
 const protect =
-  require("../middlewares/authMiddleware");
+  require(
+    "../middlewares/authMiddleware"
+  );
 
 const {
   evaluateInterview,

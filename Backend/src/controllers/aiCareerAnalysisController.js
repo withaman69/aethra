@@ -1,6 +1,9 @@
-const User = require(
-  "../models/User"
-);
+const User = require("../models/User");
+const Education = require("../models/Education");
+const Experience = require("../models/Experience");
+const Project = require("../models/Project");
+const Skill = require("../models/Skill");
+const Certification = require("../models/Certification");
 
 const {
   generateCareerReport,
@@ -16,9 +19,43 @@ const analyzeCareer =
           req.user.id
         );
 
+      const educations =
+        await Education.find({
+          user: req.user.id,
+        });
+
+      const experiences =
+        await Experience.find({
+          user: req.user.id,
+        });
+
+      const projects =
+        await Project.find({
+          user: req.user.id,
+        });
+
+      const skills =
+        await Skill.find({
+          user: req.user.id,
+        });
+
+      const certifications =
+        await Certification.find({
+          user: req.user.id,
+        });
+
+      const profileData = {
+        user,
+        educations,
+        experiences,
+        projects,
+        skills,
+        certifications,
+      };
+
       const report =
-        generateCareerReport(
-          user
+        await generateCareerReport(
+          profileData
         );
 
       res.status(200).json({

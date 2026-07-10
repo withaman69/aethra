@@ -1,4 +1,9 @@
-const generateQuestions = (
+const groq = require("./groqClient");
+
+//
+// FALLBACK QUESTIONS
+//
+const fallbackQuestions = (
   role,
   level
 ) => {
@@ -96,6 +101,92 @@ const generateQuestions = (
   );
 };
 
+//
+// AI QUESTION GENERATION
+//
+const generateQuestions =
+  async (role, level) => {
+    try {
+     const prompt = `
+Generate 10 interview questions.
+
+Role: ${role}
+Level: ${level}
+
+Mix:
+- Technical
+- HR
+- Project Based
+- Scenario Based
+
+Return ONLY valid JSON.
+
+Example:
+
+[
+ {
+   "question":"What is React?",
+   "type":"Technical"
+ },
+ {
+   "question":"Tell me about yourself",
+   "type":"HR"
+ }
+]
+`;
+
+      const completion =
+        await groq.chat.completions.create({
+          model:
+            "llama-3.3-70b-versatile",
+          messages: [
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          temperature: 0.7,
+        });
+
+      const content =
+        completion.choices[0]
+          .message.content;
+
+      const parsed =
+        JSON.parse(content);
+
+      if (
+        Array.isArray(parsed)
+      ) {
+        return parsed.map(
+          (item) =>
+            typeof item ===
+            "string"
+              ? item
+              : item.question
+        );
+      }
+
+      return fallbackQuestions(
+        role,
+        level
+      );
+    } catch (error) {
+      console.error(
+        "AI Question Generation Failed:",
+        error.message
+      );
+
+      return fallbackQuestions(
+        role,
+        level
+      );
+    }
+  };
+
+//
+// BASIC FALLBACK EVALUATION
+//
 const evaluateAnswers = (
   answers
 ) => {

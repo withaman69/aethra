@@ -16,7 +16,7 @@ console.log("ROLE:", role);
 console.log("LEVEL:", level);
 
 const questions =
-  generateQuestions(
+  await generateQuestions(
     role,
     level
   );
@@ -48,7 +48,11 @@ const submitInterview = async (req, res) => {
   try {
     const { interviewId, answers } = req.body;
 
+    console.log("INTERVIEW ID RECEIVED:", interviewId);
+
     const interview = await Interview.findById(interviewId);
+
+    console.log("INTERVIEW FOUND:", interview);
 
     if (!interview) {
       return res.status(404).json({
@@ -60,9 +64,7 @@ const submitInterview = async (req, res) => {
     const result = evaluateAnswers(answers);
 
     interview.answers = answers;
-
     interview.score = result.score;
-
     interview.feedback = result.feedback;
 
     await interview.save();
@@ -72,6 +74,7 @@ const submitInterview = async (req, res) => {
       score: result.score,
       feedback: result.feedback,
     });
+
   } catch (error) {
     console.error(error);
 
@@ -81,7 +84,11 @@ const submitInterview = async (req, res) => {
     });
   }
 };
-
+const {
+  evaluateInterviewAI,
+} = require(
+  "../services/interviewEvaluationAI"
+);
 const getInterviewHistory = async (req, res) => {
   try {
     const interviews = await Interview.find({
@@ -107,4 +114,5 @@ module.exports = {
   startInterview,
   submitInterview,
   getInterviewHistory,
+  evaluateInterviewAI,
 };

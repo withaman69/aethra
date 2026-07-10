@@ -8,7 +8,7 @@ const protect =
   require("../middlewares/authMiddleware");
 
 const {
-  generateCareerRoadmap,
+  generateRoadmapController,
 } = require(
   "../controllers/aiRoadmapGeneratorController"
 );
@@ -16,7 +16,7 @@ const {
 router.post(
   "/generate",
   protect,
-  generateCareerRoadmap
+  generateRoadmapController
 );
 
 module.exports = router;

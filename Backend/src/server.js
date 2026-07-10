@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
@@ -45,6 +46,10 @@ const goalProgressRoutes =
   );
 const skillRoutes =
   require("./routes/skillRoutes");
+  const aiTestRoutes =
+  require(
+    "./routes/aiTestRoutes"
+  );
 dotenv.config();
 
 connectDB();
@@ -97,7 +102,7 @@ app.use("/api/ai-mentor", aiMentorRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/ai-roadmap", aiRoadmapRoutes);
 app.use("/api/ai-resume", aiResumeReviewRoutes);
-app.use("/api/ai-career", aiCareerAnalysisRoutes);
+
 app.use("/api/ai-roadmap-generator", aiRoadmapGeneratorRoutes);
 app.use("/api/resume-score", resumeScoreRoutes);
 app.use("/api/ats-suggestions", atsSuggestionRoutes);
@@ -109,6 +114,18 @@ app.use("/api/interview-evaluation", interviewEvaluationRoutes);
 app.use("/api/job-readiness-report", jobReadinessReportRoutes);
 app.use("/api/pdf-report", pdfReportRoutes);
 app.use("/api/profile", profileRoutes);
+app.use(
+  "/api/ai-roadmap-generator",
+  aiRoadmapGeneratorRoutes
+);
+app.use(
+  "/api/ai-career-analysis",
+  aiCareerAnalysisRoutes
+);
+app.use(
+  "/api/ai",
+  aiTestRoutes
+);
 app.use(
   "/api/ats",
   require(

@@ -1,37 +1,51 @@
+const Interview = require(
+  "../models/Interview"
+);
+
 const {
-  evaluateAnswer,
+  evaluateInterviewAI,
 } = require(
-  "../services/interviewEvaluationService"
+  "../services/interviewEvaluationAI"
 );
 
 const evaluateInterview =
   async (req, res) => {
     try {
       const {
-        question,
-        answer,
+        interviewId,
       } = req.body;
 
-      if (
-        !question ||
-        !answer
-      ) {
+      if (!interviewId) {
         return res.status(400).json({
           success: false,
           message:
-            "Question and answer are required",
+            "Interview ID is required",
+        });
+      }
+
+      const interview =
+        await Interview.findById(
+          interviewId
+        );
+
+      if (!interview) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Interview not found",
         });
       }
 
       const result =
-        evaluateAnswer(
-          question,
-          answer
+        await evaluateInterviewAI(
+          interview.role,
+          interview.questions,
+          interview.answers
         );
 
       res.status(200).json({
         success: true,
-        ...result,
+        data: result,
       });
     } catch (error) {
       console.error(error);

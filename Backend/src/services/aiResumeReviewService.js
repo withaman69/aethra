@@ -1,72 +1,30 @@
-const reviewResume = (
-  resumeText
-) => {
-  const strengths = [];
-  const weaknesses = [];
-  const suggestions = [];
+const {
+  generateAIResponse,
+} = require("./aiService");
 
-  if (
-    resumeText
-      .toLowerCase()
-      .includes("project")
-  ) {
-    strengths.push(
-      "Projects section found"
-    );
-  } else {
-    weaknesses.push(
-      "Projects section missing"
-    );
+const reviewResume =
+  async (resumeText) => {
 
-    suggestions.push(
-      "Add projects section"
-    );
-  }
+    const prompt = `
+You are an expert ATS Resume Reviewer.
 
-  if (
-    resumeText
-      .toLowerCase()
-      .includes("experience")
-  ) {
-    strengths.push(
-      "Experience section found"
-    );
-  } else {
-    weaknesses.push(
-      "Experience section missing"
-    );
+Analyze this resume:
 
-    suggestions.push(
-      "Add work experience"
-    );
-  }
+${resumeText}
 
-  if (
-    resumeText.length < 300
-  ) {
-    weaknesses.push(
-      "Resume content too short"
-    );
+Return:
 
-    suggestions.push(
-      "Add more details"
-    );
-  }
+1. Strengths
+2. Weaknesses
+3. ATS Score out of 100
+4. Suggestions
+5. Final Verdict
 
-  const readiness =
-    Math.max(
-      0,
-      100 -
-        weaknesses.length *
-          15
-    );
+`;
 
-  return {
-    strengths,
-    weaknesses,
-    suggestions,
-    readiness,
-  };
+    return await generateAIResponse(
+      prompt
+    );
 };
 
 module.exports = {

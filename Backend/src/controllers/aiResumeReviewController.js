@@ -20,7 +20,7 @@ const reviewResumeController =
       }
 
       const result =
-        reviewResume(
+       await reviewResume(
           resumeText
         );
 

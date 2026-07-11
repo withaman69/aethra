@@ -52,7 +52,9 @@ setTimeout(() => {
 
 };
 
-return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
+return (
+   <DashboardLayout>
+     <div className="max-w-7xl mx-auto p-8">
 
   <div className="mb-8">
     <h1
@@ -257,7 +259,9 @@ return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
                         `
                     }
                   >
-                    {msg.content}
+                    <ReactMarkdown>
+  {msg.content}
+</ReactMarkdown>
                   </div>
 
                 </div>

@@ -6,6 +6,7 @@ import {
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import api from "../../api/axios";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 const AIMentor = () => {
   const [chats, setChats] = useState(() => {
     const saved = localStorage.getItem("mentorChats");
@@ -189,6 +190,18 @@ const handleSend = async () => {
         res.data.response ||
         "No response received.",
     };
+    if (!activeChat) {
+  const newChat = {
+    id: Date.now(),
+    title: currentInput.slice(0, 25),
+    messages: [userMessage, aiMessage],
+  };
+
+  setChats((prev) => [newChat, ...prev]);
+  setActiveChat(newChat.id);
+  setMessages([userMessage, aiMessage]);
+  return;
+}
 
     const updatedMessages = [
       ...messages,
@@ -458,7 +471,7 @@ const handleSend = async () => {
   }`}
 >
  <div className="prose prose-invert max-w-none">
-  <ReactMarkdown>
+  <ReactMarkdown remarkPlugins={[remarkGfm]}>
     {msg.text}
   </ReactMarkdown>
 </div>

@@ -4,7 +4,7 @@ import {
   useRef,
 } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import api from "../../services/api";
+import api from "../../api/axios";
 const AIMentor = () => {
   const [chats, setChats] = useState(() => {
     const saved = localStorage.getItem("mentorChats");

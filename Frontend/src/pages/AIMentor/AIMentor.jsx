@@ -5,6 +5,7 @@ import {
 } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import api from "../../api/axios";
+import ReactMarkdown from "react-markdown";
 const AIMentor = () => {
   const [chats, setChats] = useState(() => {
     const saved = localStorage.getItem("mentorChats");
@@ -438,26 +439,30 @@ const handleSend = async () => {
                     }`}
                   >
                     <div
-                      className={`max-w-[75%] px-5 py-4 rounded-3xl ${
-                        msg.sender === "user"
-                          ? `
-                          bg-cyan-500/20
-                          border
-                          border-cyan-500/30
-                          backdrop-blur-xl
-                          text-white
-                        `
-                          : `
-                          bg-purple-500/20
-                          border
-                          border-purple-500/30
-                          backdrop-blur-xl
-                          text-white
-                        `
-                      }`}
-                    >
-                      {msg.text}
-                    </div>
+  className={`max-w-[75%] px-5 py-4 rounded-3xl ${
+    msg.sender === "user"
+      ? `
+      bg-cyan-500/20
+      border
+      border-cyan-500/30
+      backdrop-blur-xl
+      text-white
+      `
+      : `
+      bg-purple-500/20
+      border
+      border-purple-500/30
+      backdrop-blur-xl
+      text-white
+      `
+  }`}
+>
+ <div className="prose prose-invert max-w-none">
+  <ReactMarkdown>
+    {msg.text}
+  </ReactMarkdown>
+</div>
+</div>
                   </div>
                 ))}
 

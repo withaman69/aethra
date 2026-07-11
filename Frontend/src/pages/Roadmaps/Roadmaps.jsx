@@ -3,17 +3,29 @@ import { useNavigate } from "react-router-dom";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 
-import { getRoadmaps } from "../../features/roadmaps/roadmapApi";
 
+import {
+  getRoadmaps,
+  generateAIRoadmap,
+} from "../../features/roadmaps/roadmapApi";
 import {
 getProgress,
 saveProgress,
 } from "../../features/roadmaps/roadmapProgressApi";
-import { roadmaps } from "../../data/roadmaps";
+
 const Roadmaps = () => {
 const [roadmaps, setRoadmaps] =
 useState([]);
+const [careerGoal, setCareerGoal] =
+  useState("");
 
+const [generatedRoadmap,
+  setGeneratedRoadmap] =
+  useState("");
+
+const [aiLoading,
+  setAiLoading] =
+  useState(false);
 const [loading, setLoading] =
 useState(true);
 
@@ -25,8 +37,7 @@ useState({});
 
 const navigate =
 useNavigate();
-const [selectedRoadmap, setSelectedRoadmap] =
-  useState(null);
+
 useEffect(() => {
 const fetchData =
 async () => {
@@ -70,6 +81,44 @@ fetchData();
 
 
 }, []);
+const handleGenerateRoadmap =
+  async () => {
+
+    if (!careerGoal) {
+      alert(
+        "Enter Career Goal"
+      );
+      return;
+    }
+
+    try {
+
+      setAiLoading(true);
+
+      const res =
+        await generateAIRoadmap(
+          careerGoal,
+          []
+        );
+
+      setGeneratedRoadmap(
+        res.data
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Roadmap Generation Failed"
+      );
+
+    } finally {
+
+      setAiLoading(false);
+
+    }
+  };
 
 const toggleStep =
 async (
@@ -136,7 +185,9 @@ search.toLowerCase()
 )
 );
 
-return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
+return ( 
+<DashboardLayout>
+   <div className="max-w-7xl mx-auto p-8">
 
 
   <div className="mb-10">
@@ -151,17 +202,19 @@ return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
 
   </div>
 
-  <div className="flex flex-col md:flex-row gap-4 justify-between mb-8">
+  <div className="space-y-4 mb-8">
 
-    <input
-      type="text"
-      placeholder="Search Roadmaps..."
-      value={search}
-      onChange={(e) =>
-        setSearch(e.target.value)
-      }
-      className="
-      md:w-96
+  <input
+    type="text"
+    placeholder="Search Roadmaps..."
+    value={search}
+    onChange={(e) =>
+      setSearch(
+        e.target.value
+      )
+    }
+    className="
+      w-full
       bg-white/5
       border
       border-white/10
@@ -169,12 +222,90 @@ return ( <DashboardLayout> <div className="max-w-7xl mx-auto p-8">
       px-5
       py-3
       text-white
-      placeholder:text-slate-500
+    "
+  />
+
+  <div className="flex gap-3">
+
+    <input
+      type="text"
+      placeholder="Enter Career Goal (e.g. Machine Learning Engineer)"
+      value={careerGoal}
+      onChange={(e) =>
+        setCareerGoal(
+          e.target.value
+        )
+      }
+      className="
+        flex-1
+        bg-white/5
+        border
+        border-white/10
+        rounded-2xl
+        px-5
+        py-3
+        text-white
       "
     />
 
+    <button
+      onClick={
+        handleGenerateRoadmap
+      }
+      className="
+        px-6
+        rounded-2xl
+        bg-gradient-to-r
+        from-cyan-500
+        to-purple-500
+      "
+    >
+
+      {aiLoading
+        ? "Generating..."
+        : "Generate AI Roadmap"}
+
+    </button>
+
   </div>
 
+</div>
+{generatedRoadmap && (
+
+  <div
+    className="
+    mb-8
+    bg-white/5
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+    "
+  >
+
+    <h2
+      className="
+      text-2xl
+      font-bold
+      text-cyan-300
+      mb-4
+      "
+    >
+      AI Generated Roadmap
+    </h2>
+
+    <pre
+      className="
+      whitespace-pre-wrap
+      text-slate-200
+      "
+    >
+      {generatedRoadmap}
+    </pre>
+
+  </div>
+
+)}
   {loading ? (
     <div className="text-center py-20 text-cyan-300 text-xl">
       Loading Roadmaps...

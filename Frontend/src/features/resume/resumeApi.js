@@ -40,3 +40,16 @@ export const deleteResume =
 
     return response.data;
   };
+
+  export const reviewResumeAI = async (
+  resumeText
+) => {
+  const response = await api.post(
+    "/ai-resume/review",
+    {
+      resumeText,
+    }
+  );
+
+  return response.data;
+};

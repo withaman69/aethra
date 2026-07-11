@@ -12,7 +12,7 @@ import {
 getProgress,
 saveProgress,
 } from "../../features/roadmaps/roadmapProgressApi";
-
+import ReactMarkdown from "react-markdown";
 const Roadmaps = () => {
 const [roadmaps, setRoadmaps] =
 useState([]);
@@ -294,14 +294,11 @@ return (
       AI Generated Roadmap
     </h2>
 
-    <pre
-      className="
-      whitespace-pre-wrap
-      text-slate-200
-      "
-    >
-      {generatedRoadmap}
-    </pre>
+  <ReactMarkdown
+  className="prose prose-invert max-w-none"
+>
+  {generatedRoadmap}
+</ReactMarkdown>
 
   </div>
 

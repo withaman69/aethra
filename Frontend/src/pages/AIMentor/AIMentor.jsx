@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import { useEffect, useState, useRef } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import api from "../../api/axios";
 import ReactMarkdown from "react-markdown";
@@ -13,58 +9,39 @@ const AIMentor = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [activeChat, setActiveChat] =
-    useState(null);
+  const [activeChat, setActiveChat] = useState(null);
 
-  const [messages, setMessages] =
-    useState([]);
+  const [messages, setMessages] = useState([]);
 
-  const [input, setInput] =
-    useState("");
-    const [isTyping, setIsTyping] =
-  useState(false);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
-const [sidebarOpen, setSidebarOpen] =
-  useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-const messagesEndRef =
-  useRef(null);
+  const messagesEndRef = useRef(null);
 
-const [recognition, setRecognition] =
-  useState(null);
+  const [recognition, setRecognition] = useState(null);
 
-const [isListening, setIsListening] =
-  useState(false);
+  const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(
-      "mentorChats",
-      JSON.stringify(chats)
-    );
+    localStorage.setItem("mentorChats", JSON.stringify(chats));
   }, [chats]);
   useEffect(() => {
-  const savedChats =
-    localStorage.getItem(
-      "aethra_mentor_history"
-    );
+    const savedChats = localStorage.getItem("aethra_mentor_history");
 
-  if (savedChats) {
-    setMessages(
-      JSON.parse(savedChats)
-    );
-  }
-}, []);
-useEffect(() => {
-  localStorage.setItem(
-    "aethra_mentor_history",
-    JSON.stringify(messages)
-  );
-}, [messages]);
-useEffect(() => {
-  messagesEndRef.current?.scrollIntoView({
-    behavior: "smooth",
-  });
-}, [messages, isTyping]);
+    if (savedChats) {
+      setMessages(JSON.parse(savedChats));
+    }
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("aethra_mentor_history", JSON.stringify(messages));
+  }, [messages]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages, isTyping]);
   const createNewChat = () => {
     const newChat = {
       id: Date.now(),
@@ -72,207 +49,160 @@ useEffect(() => {
       messages: [],
     };
 
-    setChats([
-      newChat,
-      ...chats,
-    ]);
+    setChats([newChat, ...chats]);
 
-    setActiveChat(
-      newChat.id
-    );
+    setActiveChat(newChat.id);
 
     setMessages([]);
   };
-const deleteChat = (id) => {
-  const updatedChats =
-    chats.filter(
-      (chat) => chat.id !== id
-    );
+  const deleteChat = (id) => {
+    const updatedChats = chats.filter((chat) => chat.id !== id);
 
-  setChats(updatedChats);
+    setChats(updatedChats);
 
-  if (activeChat === id) {
-    setActiveChat(null);
-    setMessages([]);
-  }
-};
-
-const renameChat = (id) => {
-  const newTitle =
-    prompt("Rename Chat");
-
-  if (!newTitle) return;
-
-  setChats(
-    chats.map((chat) =>
-      chat.id === id
-        ? {
-            ...chat,
-            title: newTitle,
-          }
-        : chat
-    )
-  );
-};
-  const openChat = (chat) => {
-    setActiveChat(chat.id);
-
-    setMessages(
-      chat.messages || []
-    );
-  };
-const startVoiceInput = () => {
-  const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-  if (!SpeechRecognition) {
-    alert(
-      "Voice recognition not supported"
-    );
-    return;
-  }
-
-  const recognition =
-    new SpeechRecognition();
-
-  recognition.continuous = true;
-
-  recognition.interimResults = true;
-
-  recognition.onstart = () =>
-    setIsListening(true);
-
-  recognition.onend = () =>
-    setIsListening(false);
-
-  recognition.onresult = (
-    event
-  ) => {
-    let transcript = "";
-
-    for (
-      let i = 0;
-      i <
-      event.results.length;
-      i++
-    ) {
-      transcript +=
-        event.results[i][0]
-          .transcript;
+    if (activeChat === id) {
+      setActiveChat(null);
+      setMessages([]);
     }
-
-    setInput(transcript);
   };
 
-  recognition.start();
+  const renameChat = (id) => {
+    const newTitle = prompt("Rename Chat");
 
-  setRecognition(
-    recognition
-  );
-};
-const stopVoiceInput = () => {
-  if (recognition) {
-    recognition.stop();
-  }
-};
-const handleSend = async () => {
-  if (!input.trim()) return;
-
-  const userMessage = {
-    sender: "user",
-    text: input,
-  };
-
-  const currentInput = input;
-
-  setMessages((prev) => [
-    ...prev,
-    userMessage,
-  ]);
-
-  setInput("");
-
-  setIsTyping(true);
-
-  try {
-    const res = await api.post(
-      "/ai-mentor/ask",
-      {
-        message: currentInput,
-      }
-    );
-
-    const aiMessage = {
-      sender: "ai",
-      text:
-        res.data.response ||
-        "No response received.",
-    };
-    if (!activeChat) {
-  const newChat = {
-    id: Date.now(),
-    title: currentInput.slice(0, 25),
-    messages: [userMessage, aiMessage],
-  };
-
-  setChats((prev) => [newChat, ...prev]);
-  setActiveChat(newChat.id);
-  setMessages([userMessage, aiMessage]);
-  return;
-}
-
-    const updatedMessages = [
-      ...messages,
-      userMessage,
-      aiMessage,
-    ];
-
-    setMessages(updatedMessages);
+    if (!newTitle) return;
 
     setChats(
       chats.map((chat) =>
-        chat.id === activeChat
+        chat.id === id
           ? {
               ...chat,
-              title:
-                chat.title ===
-                "New Conversation"
-                  ? currentInput.slice(
-                      0,
-                      25
-                    )
-                  : chat.title,
-              messages:
-                updatedMessages,
+              title: newTitle,
             }
-          : chat
-      )
+          : chat,
+      ),
     );
-  } catch (error) {
-    console.error(error);
+  };
+  const openChat = (chat) => {
+    setActiveChat(chat.id);
 
-    setMessages((prev) => [
-      ...prev,
-      {
+    setMessages(chat.messages || []);
+  };
+  const startVoiceInput = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Voice recognition not supported");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.continuous = true;
+
+    recognition.interimResults = true;
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.onresult = (event) => {
+      let transcript = "";
+
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+
+      setInput(transcript);
+    };
+
+    recognition.start();
+
+    setRecognition(recognition);
+  };
+  const stopVoiceInput = () => {
+    if (recognition) {
+      recognition.stop();
+    }
+  };
+  const handleSend = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = {
+      sender: "user",
+      text: input,
+    };
+
+    const currentInput = input;
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    setInput("");
+
+    setIsTyping(true);
+
+    try {
+      const res = await api.post("/ai-mentor/ask", {
+        message: currentInput,
+      });
+
+      const aiMessage = {
         sender: "ai",
-        text:
-          "Unable to connect to Aethra AI Mentor.",
-      },
-    ]);
-  } finally {
-    setIsTyping(false);
-  }
-};
+        text: res.data.response || "No response received.",
+      };
+      if (!activeChat) {
+        const newChat = {
+          id: Date.now(),
+          title: currentInput.slice(0, 25),
+          messages: [userMessage, aiMessage],
+        };
+
+        setChats((prev) => [newChat, ...prev]);
+        setActiveChat(newChat.id);
+        setMessages([userMessage, aiMessage]);
+        return;
+      }
+
+      const updatedMessages = [...messages, userMessage, aiMessage];
+
+      setMessages(updatedMessages);
+
+      setChats(
+        chats.map((chat) =>
+          chat.id === activeChat
+            ? {
+                ...chat,
+                title:
+                  chat.title === "New Conversation"
+                    ? currentInput.slice(0, 25)
+                    : chat.title,
+                messages: updatedMessages,
+              }
+            : chat,
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "ai",
+          text: "Unable to connect to Aethra AI Mentor.",
+        },
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
   return (
-  <DashboardLayout>
-    
-<div className="h-[calc(100vh-100px)] flex gap-4">
-      {/* Sidebar */}
+    <DashboardLayout>
+      <div className="h-[calc(100vh-100px)] flex gap-4">
+        {/* Sidebar */}
 
-      <div
-        className="
+        <div
+          className="
         w-80
         hidden
         lg:flex
@@ -284,12 +214,11 @@ const handleSend = async () => {
         rounded-3xl
         overflow-hidden
         "
-      >
-        <div className="p-5">
-
-          <button
-            onClick={createNewChat}
-            className="
+        >
+          <div className="p-5">
+            <button
+              onClick={createNewChat}
+              className="
             w-full
             py-4
             rounded-2xl
@@ -301,23 +230,19 @@ const handleSend = async () => {
             transition-all
             shadow-[0_0_20px_rgba(6,182,212,0.35)]
           "
-          >
-            + New Chat
-          </button>
+            >
+              + New Chat
+            </button>
+          </div>
 
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-
-          {chats.length === 0 ? (
-            <p className="text-slate-500 text-sm">
-              No conversations yet
-            </p>
-          ) : (
-            chats.map((chat) => (
-              <div
-                key={chat.id}
-                className={`
+          <div className="flex-1 overflow-y-auto px-4 pb-4">
+            {chats.length === 0 ? (
+              <p className="text-slate-500 text-sm">No conversations yet</p>
+            ) : (
+              chats.map((chat) => (
+                <div
+                  key={chat.id}
+                  className={`
                 mb-3
                 p-4
                 rounded-2xl
@@ -340,52 +265,43 @@ const handleSend = async () => {
                     `
                 }
               `}
-                onClick={() => openChat(chat)}
-              >
-                <div className="flex justify-between items-center">
+                  onClick={() => openChat(chat)}
+                >
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm font-medium truncate">{chat.title}</p>
 
-                  <p className="text-sm font-medium truncate">
-                    {chat.title}
-                  </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          renameChat(chat.id);
+                        }}
+                        className="text-cyan-400 text-xs"
+                      >
+                        ✏️
+                      </button>
 
-                  <div className="flex gap-2">
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        renameChat(chat.id);
-                      }}
-                      className="text-cyan-400 text-xs"
-                    >
-                      ✏️
-                    </button>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteChat(chat.id);
-                      }}
-                      className="text-red-400 text-xs"
-                    >
-                      🗑️
-                    </button>
-
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteChat(chat.id);
+                        }}
+                        className="text-red-400 text-xs"
+                      >
+                        🗑️
+                      </button>
+                    </div>
                   </div>
-
                 </div>
-
-              </div>
-            ))
-          )}
-
+              ))
+            )}
+          </div>
         </div>
 
-      </div>
+        {/* Chat Section */}
 
-      {/* Chat Section */}
-
-      <div
-        className="
+        <div
+          className="
         flex-1
         flex
         flex-col
@@ -396,20 +312,18 @@ const handleSend = async () => {
         rounded-3xl
         overflow-hidden
         "
-      >
+        >
+          {/* Header */}
 
-        {/* Header */}
-
-        <div
-          className="
+          <div
+            className="
           border-b
           border-white/10
           p-6
           "
-        >
-
-      <h1
-  className="
+          >
+            <h1
+              className="
   text-2xl
   md:text-4xl
             font-black
@@ -420,23 +334,19 @@ const handleSend = async () => {
             bg-clip-text
             text-transparent
           "
-          >
-            AETHRA AI MENTOR
-          </h1>
+            >
+              AETHRA AI MENTOR
+            </h1>
 
-          <p className="text-slate-400 mt-2">
-            Your Personal Career Coach
-          </p>
-<div className="mt-4">
-  <button
-    onClick={() => {
-      localStorage.removeItem(
-        "aethra_mentor_history"
-      );
+            <p className="text-slate-400 mt-2">Your Personal Career Coach</p>
+            <div className="mt-4">
+              <button
+                onClick={() => {
+                  localStorage.removeItem("aethra_mentor_history");
 
-      setMessages([]);
-    }}
-    className="
+                  setMessages([]);
+                }}
+                className="
       px-4
       py-2
       rounded-xl
@@ -447,23 +357,20 @@ const handleSend = async () => {
       hover:bg-red-500/30
       transition-all
     "
-  >
-    Clear Chat
-  </button>
-</div>
-        </div>
+              >
+                Clear Chat
+              </button>
+            </div>
+          </div>
 
-        {/* Messages */}
+          {/* Messages */}
 
-        <div className="flex-1 overflow-y-auto p-8">
-
-          <div className="max-w-5xl mx-auto">
-
-            {messages.length === 0 ? (
-              <div className="text-center mt-32">
-
-                <h2
-                  className="
+          <div className="flex-1 overflow-y-auto p-8">
+            <div className="max-w-5xl mx-auto">
+              {messages.length === 0 ? (
+                <div className="text-center mt-32">
+                  <h2
+                    className="
                   text-6xl
                   font-black
                   bg-gradient-to-r
@@ -473,29 +380,26 @@ const handleSend = async () => {
                   text-transparent
                   mb-5
                 "
-                >
-                  Welcome to Aethra
-                </h2>
-
-                <p className="text-slate-400 text-lg">
-                  Ask anything about resumes, interviews,
-                  roadmaps, jobs, skills, projects and career growth.
-                </p>
-
-              </div>
-            ) : (
-              <>
-                {messages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`flex mb-6 ${
-                      msg.sender === "user"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
                   >
+                    Welcome to Aethra
+                  </h2>
+
+                  <p className="text-slate-400 text-lg">
+                    Ask anything about resumes, interviews, roadmaps, jobs,
+                    skills, projects and career growth.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {messages.map((msg, index) => (
                     <div
-  className={`
+                      key={index}
+                      className={`flex mb-6 ${
+                        msg.sender === "user" ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      <div
+                        className={`
   max-w-[95%]
   sm:max-w-[85%]
   lg:max-w-[75%]
@@ -514,29 +418,28 @@ const handleSend = async () => {
       `
   }
 `}
->
- <div
-  className="
+                      >
+                        <div
+                          className="
   prose
   prose-invert
   max-w-none
   break-words
   overflow-hidden
 "
->
-  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-    {msg.text}
-  </ReactMarkdown>
-</div>
-</div>
-                  </div>
-                ))}
+                        >
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {msg.text}
+                          </ReactMarkdown>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
 
-                {isTyping && (
-                  <div className="flex justify-start mb-6">
-
-                    <div
-                      className="
+                  {isTyping && (
+                    <div className="flex justify-start mb-6">
+                      <div
+                        className="
                       bg-purple-500/20
                       border
                       border-purple-500/30
@@ -544,74 +447,63 @@ const handleSend = async () => {
                       px-5
                       py-4
                       "
-                    >
+                      >
+                        <div className="flex gap-2">
+                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
 
-                      <div className="flex gap-2">
+                          <div
+                            className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
+                            style={{
+                              animationDelay: "0.2s",
+                            }}
+                          />
 
-                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
-
-                        <div
-                          className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
-                          style={{
-                            animationDelay: "0.2s",
-                          }}
-                        />
-
-                        <div
-                          className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
-                          style={{
-                            animationDelay: "0.4s",
-                          }}
-                        />
-
+                          <div
+                            className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
+                            style={{
+                              animationDelay: "0.4s",
+                            }}
+                          />
+                        </div>
                       </div>
-
                     </div>
+                  )}
 
-                  </div>
-                )}
-
-                <div ref={messagesEndRef}></div>
-              </>
-            )}
-
+                  <div ref={messagesEndRef}></div>
+                </>
+              )}
+            </div>
           </div>
 
-        </div>
+          {/* Input */}
 
-        {/* Input */}
-
-        <div
-          className="
+          <div
+            className="
           border-t
           border-white/10
           bg-[#0A0A0F]
           p-5
           "
-        >
-
-       <div
-  className="
+          >
+            <div
+              className="
   max-w-5xl
   mx-auto
   flex
   gap-4
 "
->
-
-            <input
-              type="text"
-              value={input}
-              placeholder="Ask your AI Mentor..."
-              onChange={(e) =>
-                setInput(e.target.value)
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSend();
-                }
-              }}
-              className="
+            >
+              <input
+                type="text"
+                value={input}
+                placeholder="Ask your AI Mentor..."
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSend();
+                  }
+                }}
+                className="
               flex-1
               min-w-0
               bg-white/5
@@ -625,15 +517,11 @@ const handleSend = async () => {
               focus:outline-none
               focus:border-cyan-400
               "
-            />
+              />
 
-            <button
-              onClick={
-                isListening
-                  ? stopVoiceInput
-                  : startVoiceInput
-              }
-              className={`
+              <button
+                onClick={isListening ? stopVoiceInput : startVoiceInput}
+                className={`
               px-5
               rounded-2xl
               font-bold
@@ -644,13 +532,13 @@ const handleSend = async () => {
                   : "bg-white/10 border border-white/10"
               }
             `}
-            >
-              {isListening ? "Stop" : "🎤"}
-            </button>
+              >
+                {isListening ? "Stop" : "🎤"}
+              </button>
 
-            <button
-              onClick={handleSend}
-              className="
+              <button
+                onClick={handleSend}
+                className="
               px-8
               rounded-2xl
               font-bold
@@ -661,19 +549,15 @@ const handleSend = async () => {
               transition-all
               shadow-[0_0_25px_rgba(6,182,212,0.35)]
               "
-            >
-              Send
-            </button>
-
+              >
+                Send
+              </button>
+            </div>
           </div>
-
         </div>
-
       </div>
-
-    </div>
-  </DashboardLayout>
-);
+    </DashboardLayout>
+  );
 };
 
 export default AIMentor;

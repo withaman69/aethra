@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import remarkGfm from "remark-gfm";
-import jsPDF from "jspdf";
+
 import {
   getRoadmaps,
   generateAIRoadmap,
@@ -120,24 +120,35 @@ const handleGenerateRoadmap =
 
     }
   };
-  const downloadRoadmapPDF = () => {
+const downloadRoadmapPDF = async () => {
   if (!generatedRoadmap) return;
+
+  const { default: jsPDF } =
+    await import("jspdf");
 
   const doc = new jsPDF();
 
   doc.setFontSize(20);
-  doc.text("AETHRA AI Career Roadmap", 15, 20);
+
+  doc.text(
+    "AETHRA AI Career Roadmap",
+    15,
+    20
+  );
 
   doc.setFontSize(11);
 
-  const lines = doc.splitTextToSize(
-    generatedRoadmap,
-    180
-  );
+  const lines =
+    doc.splitTextToSize(
+      generatedRoadmap,
+      180
+    );
 
   doc.text(lines, 15, 40);
 
-  doc.save("Aethra-Roadmap.pdf");
+  doc.save(
+    "Aethra-Roadmap.pdf"
+  );
 };
 
 const toggleStep =
@@ -184,9 +195,14 @@ roadmapId
       roadmapId,
       updated
     );
-  } catch (error) {
-    console.error(error);
-  }
+  } catch(error){
+ console.error(error);
+
+ toast.error(
+   error?.response?.data?.message ||
+   "Login failed"
+ );
+}
 };
 
 
@@ -349,34 +365,126 @@ return (
     >
       <ReactMarkdown
   components={{
+    h1: ({ children }) => (
+      <div className="mb-10">
+        <h1
+          className="
+          text-4xl
+          md:text-5xl
+          font-black
+          bg-gradient-to-r
+          from-cyan-400
+          to-purple-500
+          bg-clip-text
+          text-transparent
+          mb-4
+        "
+        >
+          {children}
+        </h1>
+
+        <div className="h-px bg-gradient-to-r from-cyan-500 via-purple-500 to-transparent" />
+      </div>
+    ),
+
     h2: ({ children }) => (
-      <div className="mt-10 mb-6">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-3 h-3 rounded-full bg-purple-400" />
+      <div className="relative pl-10 mt-10 mb-3">
 
-          <h2 className="text-2xl font-black text-purple-300">
-            {children}
-          </h2>
-        </div>
+        <div
+          className="
+          absolute
+          left-3
+          top-0
+          bottom-[-10px]
+          w-[2px]
+          bg-gradient-to-b
+          from-cyan-400
+          to-purple-500
+        "
+        />
 
-        <div className="h-px bg-gradient-to-r from-purple-500 to-transparent" />
+        <div
+          className="
+          absolute
+          left-0
+          top-2
+          w-6
+          h-6
+          rounded-full
+          bg-gradient-to-r
+          from-cyan-400
+          to-purple-500
+          shadow-[0_0_20px_rgba(6,182,212,0.6)]
+        "
+        />
+
+        <h2
+          className="
+          text-3xl
+          font-black
+          text-cyan-300
+        "
+        >
+          {children}
+        </h2>
+      </div>
+    ),
+
+    h3: ({ children }) => (
+      <div
+        className="
+        mt-8
+        mb-4
+        inline-block
+        px-4
+        py-2
+        rounded-xl
+        bg-purple-500/20
+        border
+        border-purple-500/30
+        text-purple-300
+        font-bold
+      "
+      >
+        {children}
       </div>
     ),
 
     li: ({ children }) => (
       <div
         className="
-          mb-3
-          rounded-xl
-          border
-          border-white/10
-          bg-white/5
-          p-4
-          text-slate-200
-        "
+        flex
+        items-center
+        gap-3
+        mb-3
+        rounded-2xl
+        border
+        border-cyan-500/10
+        bg-white/5
+        backdrop-blur-xl
+        p-4
+        hover:border-cyan-400/30
+        transition-all
+      "
       >
-        🚀 {children}
+        <div className="text-xl">🚀</div>
+
+        <div className="text-slate-200">
+          {children}
+        </div>
       </div>
+    ),
+
+    p: ({ children }) => (
+      <p
+        className="
+        text-slate-300
+        leading-8
+        mb-5
+      "
+      >
+        {children}
+      </p>
     ),
   }}
 >

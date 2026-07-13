@@ -1,36 +1,109 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+import {
+  lazy,
+  Suspense,
+} from "react";
+
+import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
-import Dashboard from "../pages/Dashboard/Dashboard";
-
-import ProtectedRoute from "./ProtectedRoute";
-import Profile from "../pages/Profile/Profile";
-import Resume from "../pages/Resume/Resume";
-import Education from "../pages/Education/Education";
-import Experience from "../pages/Experience/Experience";
-import Projects from "../pages/Projects/Projects";
-import Skills from "../pages/Skills/Skills";
-import Certifications from "../pages/Certifications/Certifications";
-import Goals from "../pages/Goals/Goals";
-import AIMentor from "../pages/AIMentor/AIMentor";
-import Interview from "../pages/Interview/Interview";
-import Roadmaps from "../pages/Roadmaps/Roadmaps";
-import SkillGap from "../pages/SkillGap/SkillGap";
-import Reports from "../pages/Reports/Reports";
-import ResumeScore from "../pages/ResumeScore/ResumeScore";
-import AdvancedResumeScore from "../pages/AdvancedResumeScore/AdvancedResumeScore";
-import CareerReadiness from "../pages/CareerReadiness/CareerReadiness";
-import JobReadinessReport from "../pages/JobReadinessReport/JobReadinessReport";
-import InterviewHistory from "../pages/InterviewHistory/InterviewHistory";
 import Home from "../pages/Home/Home";
-import ATSAnalyzer from "../pages/Reports/ATSAnalyzer";
+
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
+
+import AethraLoader from "../components/loading/AethraLoader";
+
+const Dashboard = lazy(() =>
+  import("../pages/Dashboard/Dashboard")
+);
+
+const Profile = lazy(() =>
+  import("../pages/Profile/Profile")
+);
+
+const Resume = lazy(() =>
+  import("../pages/Resume/Resume")
+);
+
+const Education = lazy(() =>
+  import("../pages/Education/Education")
+);
+
+const Experience = lazy(() =>
+  import("../pages/Experience/Experience")
+);
+
+const Projects = lazy(() =>
+  import("../pages/Projects/Projects")
+);
+
+const Skills = lazy(() =>
+  import("../pages/Skills/Skills")
+);
+
+const Certifications = lazy(() =>
+  import("../pages/Certifications/Certifications")
+);
+
+const Goals = lazy(() =>
+  import("../pages/Goals/Goals")
+);
+
+const AIMentor = lazy(() =>
+  import("../pages/AIMentor/AIMentor")
+);
+
+const Interview = lazy(() =>
+  import("../pages/Interview/Interview")
+);
+
+const Roadmaps = lazy(() =>
+  import("../pages/Roadmaps/Roadmaps")
+);
+
+const SkillGap = lazy(() =>
+  import("../pages/SkillGap/SkillGap")
+);
+
+const Reports = lazy(() =>
+  import("../pages/Reports/Reports")
+);
+
+const ResumeScore = lazy(() =>
+  import("../pages/ResumeScore/ResumeScore")
+);
+
+const AdvancedResumeScore = lazy(() =>
+  import("../pages/AdvancedResumeScore/AdvancedResumeScore")
+);
+
+const CareerReadiness = lazy(() =>
+  import("../pages/CareerReadiness/CareerReadiness")
+);
+
+const JobReadinessReport = lazy(() =>
+  import("../pages/JobReadinessReport/JobReadinessReport")
+);
+
+const InterviewHistory = lazy(() =>
+  import("../pages/InterviewHistory/InterviewHistory")
+);
+
+const ATSAnalyzer = lazy(() =>
+  import("../pages/Reports/ATSAnalyzer")
+);
 const AppRouter = () => {
   return (
-    <BrowserRouter>
-      <Routes>
+   <BrowserRouter>
+  <Suspense fallback={<AethraLoader />}>
+    <Routes>
         {/* Public Routes */}
 
         <Route path="/" element={<Home />} />
@@ -132,8 +205,9 @@ const AppRouter = () => {
           }
         />
         <Route path="/reports" element={<Reports />} />
-      </Routes>
-    </BrowserRouter>
+     </Routes>
+  </Suspense>
+</BrowserRouter>
   );
 };
 

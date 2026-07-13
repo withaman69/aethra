@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
-
-
+import remarkGfm from "remark-gfm";
+import jsPDF from "jspdf";
 import {
   getRoadmaps,
   generateAIRoadmap,
@@ -120,6 +120,25 @@ const handleGenerateRoadmap =
 
     }
   };
+  const downloadRoadmapPDF = () => {
+  if (!generatedRoadmap) return;
+
+  const doc = new jsPDF();
+
+  doc.setFontSize(20);
+  doc.text("AETHRA AI Career Roadmap", 15, 20);
+
+  doc.setFontSize(11);
+
+  const lines = doc.splitTextToSize(
+    generatedRoadmap,
+    180
+  );
+
+  doc.text(lines, 15, 40);
+
+  doc.save("Aethra-Roadmap.pdf");
+};
 
 const toggleStep =
 async (
@@ -272,46 +291,99 @@ return (
 
 </div>
 {generatedRoadmap && (
-
   <div
     className="
-    mb-8
-    bg-white/5
-    border
-    border-white/10
-    rounded-3xl
-    p-6
+      mb-8
+      rounded-3xl
+      border
+      border-cyan-500/20
+      bg-gradient-to-br
+      from-slate-900
+      via-slate-950
+      to-black
+      p-8
+      shadow-[0_0_40px_rgba(34,211,238,0.08)]
     "
   >
+    <div className="flex items-center gap-3 mb-6">
+      <div className="w-3 h-3 rounded-full bg-cyan-400 animate-pulse" />
 
-    <h2
-      className="
-      text-2xl
-      font-bold
-      text-cyan-300
-      mb-4
-      "
-    >
-      AI Generated Roadmap
-    </h2>
-
- <div
+      <h2 className="text-3xl font-black bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+        AI Generated Roadmap
+      </h2>
+      <button
+  onClick={downloadRoadmapPDF}
   className="
-    prose
-    prose-invert
-    max-w-none
-    prose-headings:text-cyan-300
-    prose-strong:text-purple-300
-    prose-li:text-slate-200
+    mb-6
+    px-5
+    py-3
+    rounded-xl
+    bg-gradient-to-r
+    from-green-500
+    to-emerald-500
+    text-white
+    font-bold
+    hover:scale-105
+    transition-all
   "
 >
-  <ReactMarkdown>
-    {generatedRoadmap}
-  </ReactMarkdown>
-</div>
+  📄 Download PDF
+</button>
+    </div>
 
+    <div
+      className="
+        prose
+        prose-invert
+        max-w-none
+
+        prose-headings:text-cyan-300
+        prose-headings:font-black
+
+        prose-strong:text-purple-300
+
+        prose-li:text-slate-200
+
+        prose-p:text-slate-300
+      "
+    >
+      <ReactMarkdown
+  components={{
+    h2: ({ children }) => (
+      <div className="mt-10 mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-3 h-3 rounded-full bg-purple-400" />
+
+          <h2 className="text-2xl font-black text-purple-300">
+            {children}
+          </h2>
+        </div>
+
+        <div className="h-px bg-gradient-to-r from-purple-500 to-transparent" />
+      </div>
+    ),
+
+    li: ({ children }) => (
+      <div
+        className="
+          mb-3
+          rounded-xl
+          border
+          border-white/10
+          bg-white/5
+          p-4
+          text-slate-200
+        "
+      >
+        🚀 {children}
+      </div>
+    ),
+  }}
+>
+  {generatedRoadmap}
+</ReactMarkdown>
+    </div>
   </div>
-
 )}
   {loading ? (
     <div className="text-center py-20 text-cyan-300 text-xl">

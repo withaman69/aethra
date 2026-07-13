@@ -42,6 +42,24 @@ const [isListening, setIsListening] =
       JSON.stringify(chats)
     );
   }, [chats]);
+  useEffect(() => {
+  const savedChats =
+    localStorage.getItem(
+      "aethra_mentor_history"
+    );
+
+  if (savedChats) {
+    setMessages(
+      JSON.parse(savedChats)
+    );
+  }
+}, []);
+useEffect(() => {
+  localStorage.setItem(
+    "aethra_mentor_history",
+    JSON.stringify(messages)
+  );
+}, [messages]);
 useEffect(() => {
   messagesEndRef.current?.scrollIntoView({
     behavior: "smooth",
@@ -78,6 +96,7 @@ const deleteChat = (id) => {
     setMessages([]);
   }
 };
+
 const renameChat = (id) => {
   const newTitle =
     prompt("Rename Chat");
@@ -248,8 +267,8 @@ const handleSend = async () => {
 
   return (
   <DashboardLayout>
-    <div className="h-[calc(100vh-120px)] flex gap-6">
-
+    
+<div className="h-[calc(100vh-100px)] flex gap-4">
       {/* Sidebar */}
 
       <div
@@ -389,9 +408,10 @@ const handleSend = async () => {
           "
         >
 
-          <h1
-            className="
-            text-4xl
+      <h1
+  className="
+  text-2xl
+  md:text-4xl
             font-black
             bg-gradient-to-r
             from-cyan-400
@@ -407,7 +427,30 @@ const handleSend = async () => {
           <p className="text-slate-400 mt-2">
             Your Personal Career Coach
           </p>
+<div className="mt-4">
+  <button
+    onClick={() => {
+      localStorage.removeItem(
+        "aethra_mentor_history"
+      );
 
+      setMessages([]);
+    }}
+    className="
+      px-4
+      py-2
+      rounded-xl
+      bg-red-500/20
+      border
+      border-red-500/30
+      text-red-300
+      hover:bg-red-500/30
+      transition-all
+    "
+  >
+    Clear Chat
+  </button>
+</div>
         </div>
 
         {/* Messages */}
@@ -452,25 +495,35 @@ const handleSend = async () => {
                     }`}
                   >
                     <div
-  className={`max-w-[75%] px-5 py-4 rounded-3xl ${
+  className={`
+  max-w-[95%]
+  sm:max-w-[85%]
+  lg:max-w-[75%]
+  px-5
+  py-4
+  rounded-3xl
+  ${
     msg.sender === "user"
       ? `
       bg-cyan-500/20
-      border
-      border-cyan-500/30
-      backdrop-blur-xl
-      text-white
+      border border-cyan-500/30
       `
       : `
       bg-purple-500/20
-      border
-      border-purple-500/30
-      backdrop-blur-xl
-      text-white
+      border border-purple-500/30
       `
-  }`}
+  }
+`}
 >
- <div className="prose prose-invert max-w-none">
+ <div
+  className="
+  prose
+  prose-invert
+  max-w-none
+  break-words
+  overflow-hidden
+"
+>
   <ReactMarkdown remarkPlugins={[remarkGfm]}>
     {msg.text}
   </ReactMarkdown>
@@ -537,7 +590,14 @@ const handleSend = async () => {
           "
         >
 
-          <div className="max-w-5xl mx-auto flex gap-4">
+       <div
+  className="
+  max-w-5xl
+  mx-auto
+  flex
+  gap-4
+"
+>
 
             <input
               type="text"
@@ -553,6 +613,7 @@ const handleSend = async () => {
               }}
               className="
               flex-1
+              min-w-0
               bg-white/5
               border
               border-white/10

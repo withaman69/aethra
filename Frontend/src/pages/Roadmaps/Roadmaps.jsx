@@ -81,6 +81,7 @@ fetchData();
 
 
 }, []);
+
 const handleGenerateRoadmap =
   async () => {
 
@@ -294,11 +295,20 @@ return (
       AI Generated Roadmap
     </h2>
 
-  <ReactMarkdown
-  className="prose prose-invert max-w-none"
+ <div
+  className="
+    prose
+    prose-invert
+    max-w-none
+    prose-headings:text-cyan-300
+    prose-strong:text-purple-300
+    prose-li:text-slate-200
+  "
 >
-  {generatedRoadmap}
-</ReactMarkdown>
+  <ReactMarkdown>
+    {generatedRoadmap}
+  </ReactMarkdown>
+</div>
 
   </div>
 

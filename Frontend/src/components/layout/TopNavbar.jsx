@@ -33,23 +33,28 @@ const TopNavbar = ({ toggleSidebar }) => {
     "
     >
      {/* LEFT */}
-<div className="flex items-center gap-4">
+<div className="flex items-center gap-2 md:gap-4">
 
   <button
     onClick={toggleSidebar}
-    className="
-      lg:hidden
-      w-11 h-11
-      rounded-2xl
-      bg-white/5
-      border border-white/10
-      flex items-center justify-center
-    "
+  className="
+flex lg:hidden
+shrink-0
+w-11 h-11
+rounded-2xl
+bg-white/5
+border border-white/10
+items-center
+justify-center
+hover:border-cyan-400/50
+hover:text-cyan-400
+transition-all
+"
   >
     <Menu size={20} />
   </button>
 
-  <div>
+<div className="max-w-[140px] md:max-w-none">
         <h2
           className="
           text-xl md:text-2xl lg:text-3xl
@@ -65,14 +70,14 @@ const TopNavbar = ({ toggleSidebar }) => {
           Welcome Back 👋
         </h2>
 
-        <p className="text-slate-400 mt-1">
-          Your AI Career Command Center
-        </p>
+       <p className="text-slate-400 mt-1 hidden md:block">
+  Your AI Career Command Center
+</p>
       </div>
     </div>
 
       {/* RIGHT */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 shrink-0">
         {/* AI Status */}
         <div
           className="
@@ -97,33 +102,38 @@ const TopNavbar = ({ toggleSidebar }) => {
 
         {/* Search */}
         <button
-          className="
-          w-11 h-11
-          rounded-2xl
-          bg-white/5
-          border border-white/10
-          flex items-center justify-center
-          hover:border-cyan-400/50
-          hover:text-cyan-400
-          transition-all
-        "
+         className="
+hidden sm:flex
+relative
+w-11 h-11
+rounded-2xl
+bg-white/5
+border border-white/10
+items-center
+justify-center
+hover:border-cyan-400/50
+hover:text-cyan-400
+transition-all
+"
         >
           <Search size={18} />
         </button>
 
         {/* Notifications */}
         <button
-          className="
-          relative
-          w-11 h-11
-          rounded-2xl
-          bg-white/5
-          border border-white/10
-          flex items-center justify-center
-          hover:border-cyan-400/50
-          hover:text-cyan-400
-          transition-all
-        "
+     className="
+hidden sm:flex
+relative
+w-11 h-11
+rounded-2xl
+bg-white/5
+border border-white/10
+items-center
+justify-center
+hover:border-cyan-400/50
+hover:text-cyan-400
+transition-all
+"
         >
           <Bell size={18} />
 
@@ -141,15 +151,17 @@ const TopNavbar = ({ toggleSidebar }) => {
         </button>
 
         {/* User Card */}
-        <div
-          className="
-          flex items-center gap-3
-          px-4 py-2
-          rounded-2xl
-          bg-white/5
-          border border-white/10
-        "
-        >
+      <div
+  className="
+  flex items-center gap-2
+  px-2 md:px-4
+  py-2
+  rounded-2xl
+  bg-white/5
+  border border-white/10
+  max-w-[150px] md:max-w-none
+"
+>
           <div
             className="
             w-11 h-11
@@ -169,30 +181,30 @@ const TopNavbar = ({ toggleSidebar }) => {
               : "A"}
           </div>
 
-          <div>
-            <p className="font-semibold text-white">
-              {user?.name || "Aman"}
-            </p>
+       <div className="hidden md:block">
+  <p className="font-semibold text-white">
+    {user?.name || "Aman"}
+  </p>
 
-            <p className="text-xs text-slate-400">
-              Career Builder
-            </p>
-          </div>
+  <p className="text-xs text-slate-400">
+    Career Builder
+  </p>
+</div>
         </div>
 
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="
-          w-11 h-11
-          rounded-2xl
-          bg-red-500/10
-          border border-red-500/20
-          text-red-400
-          flex items-center justify-center
-          hover:bg-red-500/20
-          transition-all
-        "
+         className="
+w-10 h-10 md:w-11 md:h-11
+rounded-2xl
+bg-red-500/10
+border border-red-500/20
+text-red-400
+flex items-center justify-center
+hover:bg-red-500/20
+transition-all
+"
         >
           <LogOut size={18} />
         </button>

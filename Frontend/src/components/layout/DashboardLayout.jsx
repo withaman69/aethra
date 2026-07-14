@@ -186,17 +186,18 @@ return (
       </aside>
 
       {/* Content */}
-      <main
-        className="
-          flex-1
-          relative
-          overflow-y-auto
-          bg-gradient-to-br
-          from-[#050816]
-          via-[#0B1120]
-          to-[#111827]
-        "
-      >
+<main
+  className="
+    flex-1
+    relative
+    overflow-y-auto
+    overflow-x-hidden
+    bg-gradient-to-br
+    from-[#050816]
+    via-[#0B1120]
+    to-[#111827]
+  "
+>
 
         {/* Glow Effects */}
         <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/10 blur-[180px] rounded-full"></div>
@@ -209,7 +210,7 @@ return (
   }
 />
 
-       <div className="relative z-10 px-4 md:px-6 lg:px-8 py-6">
+       <div className="relative z-10 w-full max-w-full px-4 md:px-6 lg:px-8 py-6 overflow-x-hidden">
           {children}
         </div>
 
